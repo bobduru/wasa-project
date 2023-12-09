@@ -3,43 +3,374 @@ servers:
   - url: "http://localhost:3000"
 info:
   title: WASAPhoto
-  description: Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can
-upload your photos directly from your PC, and they will be visible to everyone following you.
+  description: Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can upload your photos directly from your PC, and they will be visible to everyone following you.
   version: 1.0.0
 paths:
-/session:
-  post:
-   tags: ["login"]
-  summary: Logs in the user
-  description: If the user does not exist, it will be created,
-    and an identifier is returned.
-    If the user exists, the user identifier is returned.
-  operationId: doLogin
-  requestBody:
-    description: User details
-    content:
-    application/json:
-    schema:
+  /session:
+    post:
+    tags: ["login"]
+    summary: Logs in the user
+    description: If the user does not exist, it will be created,
+      and an identifier is returned.
+      If the user exists, the user identifier is returned.
+    operationId: doLogin
+    requestBody:
+      description: User details
+      content:
+      application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            example: Maria
+            pattern: 'ˆ.*?$'
+            minLength: 3
+            maxLength: 16
+      required: true
+    responses:
+    '201':
+        description: User log-in action successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identifier:
+                  # change here if you decide to use an integer
+                  # or any other type of identifier
+                  type: string
+                  example: "abcdef012345"
+  /user/set-username:
+    put:
+      summary: User can update their username
+      operationId: setMyUserName
+      
+      tags: ["user"]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Username set successfully
+        '400':
+          description: Bad Request - username already exists
+        '401':
+          description: Unauthorized - User not authenticated
+  /user/upload-photo:
+    post:
+      summary: Upload Photo
+      operationId: uploadPhoto
+      tags: ["photo"]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Photo'
+        '400':
+          description: Bad Request - Invalid file format or size
+        '401':
+          description: Unauthorized - User not authenticated        
+  /user/follow:
+    post:
+      summary: Logged in user follows another
+      operationId: followUser
+      tags: ["user"]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: User followed successfully
+        '400':
+          description: Bad Request - Invalid user ID or user not found
+        '401':
+          description: Unauthorized - User not authenticated
+  /user/unfollow:
+    post:
+      summary: Logged in user unfollows another
+      operationId: unfollowUser
+      tags: ["user"]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: User unfollowed successfully
+        '400':
+          description: Bad Request - Invalid user ID or user not found
+        '401':
+          description: Unauthorized - User not authenticated
+  /user/ban:
+    post:
+      summary: Logged in user bans another user
+      operationId: banUser
+      tags: ["user"]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+      responses:
+        '200':
+          description: User banned successfully
+        '400':
+          description: Bad Request - Invalid user ID or user not found
+        '401':
+          description: Unauthorized - User not authenticated
+  /user/unban:
+      post:
+        summary: Logged in user unbans another user
+        operationId: unbanUser
+        tags: ["user"]
+        security:
+        - BearerAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                userId:
+                  type: string
+        responses:
+          '200':
+            description: User unbanned successfully
+          '400':
+            description: Bad Request - Invalid user ID or user not found
+          '401':
+          description: Unauthorized - User not authenticated
+  /user/profile/{userId}:
+      get:
+        summary: Get User Profile
+        operationId: getUserProfile
+        tags: ["user"]
+        parameters:
+          - name: userId
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: User profile retrieved successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    userId:
+                        type: string
+                    username:
+                      type: string
+                    photos:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Photo'
+                    followers:
+                      type: array
+                      items:
+                        type: string
+                    following:
+                      type: array
+                      items:
+                        type: string
+          '404':
+            description: User not found
+  /user/stream/:
+    get:
+      summary: User gets stream
+      operationId: getMyStream
+      tags: ["user", "photo"]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Stream retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Photo'
+  /photo/like:
+    post:
+      summary: Like Photo
+      operationId: likePhoto
+      tags: ["photo"]
+      parameters:
+        - in: query
+          name: photoId
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []  
+      responses:
+        '200':
+          description: Photo liked successfully
+        '400':
+          description: Bad Request - Invalid photo ID or photo not found
+        '401':
+          description: Unauthorized - User not authenticated
+
+  /photo/unlike:
+    post:
+      summary: Unlike Photo
+      operationId: unlikePhoto
+      tags: ["photo"]
+      parameters:
+        - in: query
+          name: photoId
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []  
+      responses:
+        '200':
+          description: Photo unliked successfully
+        '400':
+          description: Bad Request - Invalid photo ID or photo not found
+        '401':
+          description: Unauthorized - User not authenticated
+
+  /photo/comment:
+    post:
+      summary: Comment on Photo
+      operationId: commentPhoto
+      tags: ["photo"]
+      parameters:
+        - in: query
+          name: photoId
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: comment
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []  
+      responses:
+        '200':
+          description: Comment added successfully
+        '400':
+          description: Bad Request - Invalid photo ID or photo not found
+        '401':
+          description: Unauthorized - User not authenticated
+
+  /photo/uncomment:
+    post:
+      summary: Remove Comment from Photo
+      operationId: uncommentPhoto
+      tags: ["photo"]
+      parameters:
+        - in: query
+          name: photoId
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: commentId
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []  
+      responses:
+        '200':
+          description: Comment removed successfully
+        '400':
+          description: Bad Request - Invalid photo ID, photo not found, or comment not found
+
+  /photo/delete:
+    delete:
+      summary: Delete Photo
+      operationId: deletePhoto
+      tags: ["photo"]
+      parameters:
+        - in: query
+          name: photoId
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []  
+      responses:
+        '200':
+          description: Photo deleted successfully
+        '400':
+          description: Bad Request - Invalid photo ID or photo not found
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: string
+      in: header
+      name: Authorization
+      description: The user identifier (User id) obtained after logging in. Include it in the Authorization header.
+  schemas:
+    Photo:
       type: object
       properties:
-        name:
+        image:
           type: string
-          example: Maria
-          pattern: 'ˆ.*?$'
-          minLength: 3
-          maxLength: 16
-    required: true
-  responses:
-   '201':
-      description: User log-in action successful
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              identifier:
-                # change here if you decide to use an integer
-                # or any other type of identifier
-                type: string
-                example: "abcdef012345"
-        
+        photoId:
+          type: string
+        uploadDate:
+          type: string
+        likes:
+          type: integer
+        comments:
+          type: array
+          items:
+            type: string
+
+
