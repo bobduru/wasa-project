@@ -61,8 +61,7 @@ paths:
       responses:
         '200':
           description: Username set successfully
-        '400':
-          description: Bad Request - username already exists
+        
         '401':
           description: Unauthorized - User not authenticated
   /user/upload-photo:

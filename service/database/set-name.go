@@ -1,7 +1,26 @@
 package database
 
-// SetName is an example that shows you how to execute insert/update
-func (db *appdbimpl) SetName(name string) error {
-	_, err := db.c.Exec("INSERT INTO example_table (id, name) VALUES (1, ?)", name)
-	return err
+import (
+	"fmt"
+	"strconv"
+)
+
+// SetName sets the name in the database and returns the identifier
+func (db *appdbimpl) SetName(name string) (string, error) {
+
+	result, err := db.c.Exec("INSERT INTO example_table (name) VALUES (?)", name)
+	if err != nil {
+		return "", err
+	}
+
+	// Retrieve the ID of the last inserted record
+	id, err := result.LastInsertId()
+	if err != nil {
+		return "", err
+	}
+
+	// Convert the ID to a string
+	idString := strconv.FormatInt(id, 10)
+	fmt.Printf("ID: %s\n", idString)
+	return idString, nil
 }
