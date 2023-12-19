@@ -11,7 +11,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 
 	rt.router.POST("/login", rt.postLogin)
-
+	rt.router.PUT("/update-name", rt.putUpdateName)
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

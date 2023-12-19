@@ -40,7 +40,7 @@ import (
 type AppDatabase interface {
 	SetName(name string) (string, error)
 	FindName(nameToFind string) (string, error)
-
+	UpdateName(id string, name string) (string, error)
 	Ping() error
 }
 

@@ -8,42 +8,42 @@ info:
 paths:
   /session:
     post:
-    tags: ["login"]
-    summary: Logs in the user
-    description: If the user does not exist, it will be created,
-      and an identifier is returned.
-      If the user exists, the user identifier is returned.
-    operationId: doLogin
-    requestBody:
-      description: User details
-      content:
-      application/json:
-      schema:
-        type: object
-        properties:
-          name:
-            type: string
-            example: Maria
-            pattern: 'ˆ.*?$'
-            minLength: 3
-            maxLength: 16
-      required: true
-    responses:
-    '201':
-        description: User log-in action successful
+      tags: ["login"]
+      summary: Logs in the user
+      description: If the user does not exist, it will be created,
+        and an identifier is returned.
+        If the user exists, the user identifier is returned.
+      operationId: doLogin
+      requestBody:
+        description: User details
         content:
           application/json:
             schema:
               type: object
               properties:
-                identifier:
-                  # change here if you decide to use an integer
-                  # or any other type of identifier
+                name:
                   type: string
-                  example: "abcdef012345"
-  /user/set-username:
+                  example: Maria
+                  pattern: 'ˆ.*?$'
+                  minLength: 3
+                  maxLength: 16
+        required: true
+      responses:
+        '201':
+            description: User log-in action successful
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    identifier:
+                      # change here if you decide to use an integer
+                      # or any other type of identifier
+                      type: string
+                      example: "abcdef012345"
+  /user/update-name:
     put:
-      summary: User can update their username
+      summary: User can update their name
       operationId: setMyUserName
       
       tags: ["user"]
@@ -56,12 +56,11 @@ paths:
             schema:
               type: object
               properties:
-                username:
+                name:
                   type: string
       responses:
         '200':
-          description: Username set successfully
-        
+          description: Name set successfully
         '401':
           description: Unauthorized - User not authenticated
   /user/upload-photo:
@@ -175,15 +174,15 @@ paths:
               schema:
                 type: object
                 properties:
-                userId:
-                  type: string
+                  userId:
+                    type: string
         responses:
           '200':
             description: User unbanned successfully
           '400':
             description: Bad Request - Invalid user ID or user not found
           '401':
-          description: Unauthorized - User not authenticated
+            description: Unauthorized - User not authenticated
   /user/profile/{userId}:
       get:
         summary: Get User Profile
@@ -351,7 +350,7 @@ paths:
 components:
   securitySchemes:
     BearerAuth:
-      type: string
+      type: apiKey
       in: header
       name: Authorization
       description: The user identifier (User id) obtained after logging in. Include it in the Authorization header.
