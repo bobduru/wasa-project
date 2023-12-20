@@ -8,7 +8,7 @@ import (
 // SetName sets the name in the database and returns the identifier
 func (db *appdbimpl) SetName(name string) (string, error) {
 
-	result, err := db.c.Exec("INSERT INTO example_table (name) VALUES (?)", name)
+	result, err := db.c.Exec("INSERT INTO users (name) VALUES (?)", name)
 	if err != nil {
 		return "", err
 	}

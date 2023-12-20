@@ -5,7 +5,7 @@ import (
 )
 
 func (db *appdbimpl) UpdateName(id string, name string) (string, error) {
-	result, err := db.c.Exec("UPDATE example_table SET name=? WHERE id=?", name, id)
+	result, err := db.c.Exec("UPDATE users SET name=? WHERE id=?", name, id)
 	if err != nil {
 		return "", err
 	}
