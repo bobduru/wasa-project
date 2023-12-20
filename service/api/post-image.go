@@ -11,13 +11,7 @@ import (
 )
 
 func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// Extract user ID from the Authorization header
-	userID := r.Header.Get("Authorization")
-
-	if !rt.db.CheckUserId(userID) {
-		http.Error(w, "User ID not found", http.StatusNotFound)
-		return
-	}
+	userID := r.Context().Value("userID").(string)
 
 	path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
 	// Maximum upload of 10 MB files

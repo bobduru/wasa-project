@@ -44,6 +44,7 @@ type AppDatabase interface {
 	UpdateName(id string, name string) (string, error)
 	UploadImage(userID string) (*Image, error)
 	CheckUserId(userID string) bool
+	FollowUser(loggedInUserId string, userIdToFollow string) error
 	Ping() error
 }
 

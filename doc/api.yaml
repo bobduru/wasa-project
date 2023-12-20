@@ -105,7 +105,7 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                userIdToFollow:
                   type: string
       responses:
         '200':
