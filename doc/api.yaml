@@ -151,7 +151,7 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                userIdToBan:
                   type: string
       responses:
         '200':
@@ -161,7 +161,7 @@ paths:
         '401':
           description: Unauthorized - User not authenticated
   /user/unban:
-      post:
+      delete:
         summary: Logged in user unbans another user
         operationId: unbanUser
         tags: ["user"]
@@ -174,7 +174,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  userId:
+                  userIdToUnban:
                     type: string
         responses:
           '200':

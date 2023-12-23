@@ -20,6 +20,8 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/image", rt.AuthenticateMiddleware(rt.postImage))
 	rt.router.POST("/user/follow", rt.AuthenticateMiddleware(rt.postFollow))
 	rt.router.DELETE("/user/unfollow", rt.AuthenticateMiddleware(rt.deleteUnfollow))
+	rt.router.POST("/user/ban", rt.AuthenticateMiddleware(rt.postBan))
+	rt.router.DELETE("/user/unban", rt.AuthenticateMiddleware(rt.deleteUnban))
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

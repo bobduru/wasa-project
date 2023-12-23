@@ -46,7 +46,8 @@ type AppDatabase interface {
 	CheckUserId(userID string) bool
 	FollowUser(loggedInUserId string, userIdToFollow string) error
 	UnfollowUser(loggedInUserId string, userIdToUnfollow string) error
-
+	BanUser(bannerIdString string, bannedIdString string) error
+	UnbanUser(bannerIdString string, bannedIdString string) error
 	Ping() error
 }
 
