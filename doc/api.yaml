@@ -115,7 +115,7 @@ paths:
         '401':
           description: Unauthorized - User not authenticated
   /user/unfollow:
-    post:
+    delete:
       summary: Logged in user unfollows another
       operationId: unfollowUser
       tags: ["user"]
@@ -128,7 +128,7 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                userIdToUnfollow:
                   type: string
       responses:
         '200':
