@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -11,15 +10,9 @@ func (rt *_router) deleteUnban(w http.ResponseWriter, r *http.Request, ps httpro
 	// Retrieve the logged-in user's ID from the context
 	loggedInUserId := r.Context().Value("userID").(string)
 
-	// Decode the JSON body
-	var requestData map[string]string
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&requestData); err != nil {
-		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
-		return
-	}
+	// Extracting userId from the URL path parameter.
+	userIdToUnban := ps.ByName("userId")
 
-	userIdToUnban := requestData["userIdToUnban"]
 	if userIdToUnban == "" {
 		http.Error(w, "User ID to unban is required", http.StatusBadRequest)
 		return

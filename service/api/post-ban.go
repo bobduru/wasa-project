@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -10,15 +9,8 @@ import (
 func (rt *_router) postBan(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	loggedInUserId := r.Context().Value("userID").(string)
 
-	// Decode the JSON body
-	var requestData map[string]string
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&requestData); err != nil {
-		http.Error(w, "Invalid JSON body", http.StatusBadRequest)
-		return
-	}
-
-	userIdToBan := requestData["userIdToBan"]
+	// Extracting userId from the URL path parameter.
+	userIdToBan := ps.ByName("userId")
 	if userIdToBan == "" {
 		http.Error(w, "User ID to ban is required", http.StatusBadRequest)
 		return

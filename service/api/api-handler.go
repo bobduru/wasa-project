@@ -19,12 +19,12 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.GET("/user/profile/:userId", rt.GetUserProfile)
 
-	rt.router.PUT("/update-name", rt.AuthenticateMiddleware(rt.putUpdateName))
-	rt.router.POST("/image", rt.AuthenticateMiddleware(rt.postImage))
-	rt.router.POST("/user/follow", rt.AuthenticateMiddleware(rt.postFollow))
-	rt.router.DELETE("/user/unfollow", rt.AuthenticateMiddleware(rt.deleteUnfollow))
-	rt.router.POST("/user/ban", rt.AuthenticateMiddleware(rt.postBan))
-	rt.router.DELETE("/user/unban", rt.AuthenticateMiddleware(rt.deleteUnban))
+	rt.router.PUT("/user/name", rt.AuthenticateMiddleware(rt.putUpdateName))
+	rt.router.POST("/photo", rt.AuthenticateMiddleware(rt.postImage))
+	rt.router.POST("/user/follow/:userId", rt.AuthenticateMiddleware(rt.postFollow))
+	rt.router.DELETE("/user/follow/:userId", rt.AuthenticateMiddleware(rt.deleteUnfollow))
+	rt.router.POST("/user/ban/:userId", rt.AuthenticateMiddleware(rt.postBan))
+	rt.router.DELETE("/user/ban/:userId", rt.AuthenticateMiddleware(rt.deleteUnban))
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

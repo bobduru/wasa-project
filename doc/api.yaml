@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: "http://localhost:3000"
+  - url: "https://localhost:3000"
 info:
   title: WASAPhoto
   description: Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can upload your photos directly from your PC, and they will be visible to everyone following you.
@@ -14,12 +14,14 @@ paths:
         and an identifier is returned.
         If the user exists, the user identifier is returned.
       operationId: doLogin
+      security: []
       requestBody:
         description: User details
         content:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 name:
                   type: string
@@ -41,7 +43,7 @@ paths:
                       # or any other type of identifier
                       type: string
                       example: "abcdef012345"
-  /user/update-name:
+  /user/name:
     put:
       summary: User can update their name
       operationId: setMyUserName
@@ -55,15 +57,23 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 name:
-                  type: string
+                  $ref: "#/components/schemas/plainString"
       responses:
         '200':
           description: Name set successfully
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    updated_name:
+                      $ref: '#/components/schemas/plainString'
         '401':
           description: Unauthorized - User not authenticated
-  /user/upload-photo:
+  /photo/:
     post:
       summary: Upload Photo
       operationId: uploadPhoto
@@ -75,11 +85,13 @@ paths:
         content:
           multipart/form-data:
             schema:
+              additionalProperties: false
               type: object
               properties:
                 file:
                   type: string
                   format: binary
+                  maxLength: 10000000
       responses:
         '201':
           description: Photo uploaded successfully
@@ -89,95 +101,150 @@ paths:
                 $ref: '#/components/schemas/Photo'
         '400':
           description: Bad Request - Invalid file format or size
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
         '401':
-          description: Unauthorized - User not authenticated        
-  /user/follow:
+          description: Unauthorized - User not authenticated    
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString' 
+    delete:
+      summary: Delete Photo
+      operationId: deletePhoto
+      tags: ["photo"]
+      parameters:
+        - in: query
+          name: photoId
+          schema:
+            $ref: "#/components/schemas/idString"
+          required: true
+      security:
+        - BearerAuth: []  
+      responses:
+        '204':
+          description: Photo deleted successfully
+        '400':
+          description: Bad Request - Invalid photo ID or photo not found
+
+  /user/follow/{userId}:
     post:
       summary: Logged in user follows another
       operationId: followUser
       tags: ["user"]
+      parameters:
+          - name: userId
+            in: path
+            required: true
+            schema:
+              $ref: "#/components/schemas/idString"
       security:
         - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userIdToFollow:
-                  type: string
       responses:
-        '200':
+        '204':
           description: User followed successfully
         '400':
           description: Bad Request - Invalid user ID or user not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
         '401':
           description: Unauthorized - User not authenticated
-  /user/unfollow:
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
+        '403':
+          description: User does not have the rights
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/plainString'
+          
     delete:
       summary: Logged in user unfollows another
       operationId: unfollowUser
       tags: ["user"]
+      parameters:
+          - name: userId
+            in: path
+            required: true
+            schema:
+              $ref: "#/components/schemas/idString"
       security:
         - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userIdToUnfollow:
-                  type: string
       responses:
-        '200':
+        '204':
           description: User unfollowed successfully
         '400':
           description: Bad Request - Invalid user ID or user not found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
         '401':
           description: Unauthorized - User not authenticated
-  /user/ban:
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
+        '403':
+          description: User does not have the rights
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/plainString'
+        
+        "406":
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/plainString'
+  /user/ban/{userId}:
     post:
       summary: Logged in user bans another user
       operationId: banUser
       tags: ["user"]
       security:
         - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
+      parameters:
+          - name: userId
+            in: path
+            required: true
             schema:
-              type: object
-              properties:
-                userIdToBan:
-                  type: string
+              $ref: "#/components/schemas/idString"
+      
       responses:
-        '200':
+        '204':
           description: User banned successfully
         '400':
           description: Bad Request - Invalid user ID or user not found
         '401':
           description: Unauthorized - User not authenticated
-  /user/unban:
-      delete:
+    delete:
         summary: Logged in user unbans another user
         operationId: unbanUser
         tags: ["user"]
         security:
         - BearerAuth: []
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  userIdToUnban:
-                    type: string
+        parameters:
+          - name: userId
+            in: path
+            required: true
+            schema:
+              $ref: "#/components/schemas/idString"
         responses:
-          '200':
+          '204':
             description: User unbanned successfully
           '400':
             description: Bad Request - Invalid user ID or user not found
@@ -188,12 +255,13 @@ paths:
         summary: Get User Profile
         operationId: getUserProfile
         tags: ["user"]
+        security: []
         parameters:
           - name: userId
             in: path
             required: true
             schema:
-              type: string
+              $ref: "#/components/schemas/idString"
         responses:
           '200':
             description: User profile retrieved successfully
@@ -246,42 +314,40 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Photo'
-  /photo/like:
+  /photo/like/{photoId}:
     post:
       summary: Like Photo
       operationId: likePhoto
       tags: ["photo"]
       parameters:
-        - in: query
-          name: photoId
-          schema:
-            type: string
-          required: true
+          - name: photoId
+            in: path
+            required: true
+            schema:
+              $ref: "#/components/schemas/idString"
       security:
         - BearerAuth: []  
       responses:
-        '200':
+        '204':
           description: Photo liked successfully
         '400':
           description: Bad Request - Invalid photo ID or photo not found
         '401':
           description: Unauthorized - User not authenticated
-
-  /photo/unlike:
-    post:
+    delete:
       summary: Unlike Photo
       operationId: unlikePhoto
       tags: ["photo"]
       parameters:
-        - in: query
+        - in: path
           name: photoId
           schema:
-            type: string
+            $ref: "#/components/schemas/idString"
           required: true
       security:
         - BearerAuth: []  
       responses:
-        '200':
+        '204':
           description: Photo unliked successfully
         '400':
           description: Bad Request - Invalid photo ID or photo not found
@@ -297,25 +363,23 @@ paths:
         - in: query
           name: photoId
           schema:
-            type: string
+            $ref: "#/components/schemas/idString"
           required: true
         - in: query
-          name: comment
+          name: commentId
           schema:
-            type: string
+            $ref: "#/components/schemas/idString"
           required: true
       security:
         - BearerAuth: []  
       responses:
-        '200':
+        '204':
           description: Comment added successfully
         '400':
           description: Bad Request - Invalid photo ID or photo not found
         '401':
           description: Unauthorized - User not authenticated
-
-  /photo/uncomment:
-    post:
+    delete:
       summary: Remove Comment from Photo
       operationId: uncommentPhoto
       tags: ["photo"]
@@ -323,39 +387,21 @@ paths:
         - in: query
           name: photoId
           schema:
-            type: string
+            $ref: "#/components/schemas/idString"
           required: true
         - in: query
           name: commentId
           schema:
-            type: string
+            $ref: "#/components/schemas/idString"
           required: true
       security:
         - BearerAuth: []  
       responses:
-        '200':
+        '204':
           description: Comment removed successfully
         '400':
           description: Bad Request - Invalid photo ID, photo not found, or comment not found
 
-  /photo/delete:
-    delete:
-      summary: Delete Photo
-      operationId: deletePhoto
-      tags: ["photo"]
-      parameters:
-        - in: query
-          name: photoId
-          schema:
-            type: string
-          required: true
-      security:
-        - BearerAuth: []  
-      responses:
-        '200':
-          description: Photo deleted successfully
-        '400':
-          description: Bad Request - Invalid photo ID or photo not found
 
 components:
   securitySchemes:
@@ -365,20 +411,38 @@ components:
       name: Authorization
       description: The user identifier (User id) obtained after logging in. Include it in the Authorization header.
   schemas:
+    plainString:
+      type: string
+      pattern: '^[a-zA-Z0-9]$' 
+      maxLength: 100 
+    idString:
+      type: string
+      pattern: '^[0-9]+$'
+      maxLength: 30
     Photo:
       type: object
+      additionalProperties: false
       properties:
         image:
           type: string
+          pattern: '^[a-zA-Z0-9]$' 
+          maxLength: 100 
         photoId:
           type: string
+          pattern: '^[a-zA-Z0-9]$' 
+          maxLength: 100 
         uploadDate:
           type: string
+          pattern: '^[a-zA-Z0-9]$' 
+          maxLength: 100 
         likes:
           type: integer
         comments:
           type: array
+          maxItems: 50
           items:
             type: string
+            pattern: '^[a-zA-Z0-9]$' 
+            maxLength: 400 
 
 
