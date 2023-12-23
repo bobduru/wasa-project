@@ -48,11 +48,20 @@ type AppDatabase interface {
 	UnfollowUser(loggedInUserId string, userIdToUnfollow string) error
 	BanUser(bannerIdString string, bannedIdString string) error
 	UnbanUser(bannerIdString string, bannedIdString string) error
+	GetUserProfile(userId int64) (*UserProfile, error)
 	Ping() error
 }
 
 type appdbimpl struct {
 	c *sql.DB
+}
+
+type UserProfile struct {
+	UserId    int64
+	Name      string
+	Photos    []Image
+	Followers []User
+	Following []User
 }
 
 type User struct {

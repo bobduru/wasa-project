@@ -34,10 +34,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/ardanlabs/conf"
 	"github.com/bobduru/wasa-project.git/service/api"
 	"github.com/bobduru/wasa-project.git/service/database"
 	"github.com/bobduru/wasa-project.git/service/globaltime"
-	"github.com/ardanlabs/conf"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/sirupsen/logrus"
 )
@@ -83,7 +83,7 @@ func run() error {
 
 	// Start Database
 	logger.Println("initializing database support")
-	dbconn, err := sql.Open("sqlite3", cfg.DB.Filename)
+	dbconn, err := sql.Open("sqlite3", "./db/database.db")
 	if err != nil {
 		logger.WithError(err).Error("error opening SQLite DB")
 		return fmt.Errorf("opening SQLite: %w", err)

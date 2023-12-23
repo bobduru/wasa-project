@@ -203,7 +203,7 @@ paths:
                   type: object
                   properties:
                     userId:
-                        type: string
+                      type: string
                     username:
                       type: string
                     photos:
@@ -213,11 +213,21 @@ paths:
                     followers:
                       type: array
                       items:
-                        type: string
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                          username:
+                            type: string
                     following:
                       type: array
                       items:
-                        type: string
+                        type: object
+                        properties:
+                          userId:
+                            type: string
+                          username:
+                            type: string
           '404':
             description: User not found
   /user/stream/:

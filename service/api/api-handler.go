@@ -16,6 +16,9 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 
 	rt.router.POST("/login", rt.postLogin)
+
+	rt.router.GET("/user/profile/:userId", rt.GetUserProfile)
+
 	rt.router.PUT("/update-name", rt.AuthenticateMiddleware(rt.putUpdateName))
 	rt.router.POST("/image", rt.AuthenticateMiddleware(rt.postImage))
 	rt.router.POST("/user/follow", rt.AuthenticateMiddleware(rt.postFollow))

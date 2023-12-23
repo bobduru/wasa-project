@@ -26,7 +26,7 @@ type WebAPIConfiguration struct {
 	}
 	Debug bool
 	DB    struct {
-		Filename string `conf:"/tmp/testDB.db"`
+		Filename string `conf:"/tmp/lol.db"`
 	}
 }
 
