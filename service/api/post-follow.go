@@ -7,8 +7,11 @@ import (
 )
 
 func (rt *_router) postFollow(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	loggedInUserId := r.Context().Value("userID").(string)
-
+	loggedInUserId, ok := r.Context().Value("userID").(string)
+	if !ok {
+		http.Error(w, "User ID missing from context", http.StatusUnauthorized)
+		return
+	}
 	// Extracting userId from the URL path parameter.
 	userId := ps.ByName("userId")
 

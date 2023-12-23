@@ -10,7 +10,11 @@ import (
 // putUpdateName handles the HTTP PUT request for updating the name.
 func (rt *_router) putUpdateName(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-	userID := r.Context().Value("userID").(string)
+	userID, ok := r.Context().Value("userID").(string)
+	if !ok {
+		http.Error(w, "User ID missing from context", http.StatusUnauthorized)
+		return
+	}
 
 	// Decode the JSON body to get the new name
 	var requestData map[string]string
