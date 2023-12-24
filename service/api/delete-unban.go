@@ -28,5 +28,5 @@ func (rt *_router) deleteUnban(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// If successful
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User unbanned successfully"))
+	_, _ = w.Write([]byte("User unbanned successfully"))
 }

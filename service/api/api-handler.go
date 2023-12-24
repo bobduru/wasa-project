@@ -21,6 +21,7 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.PUT("/user/name", rt.AuthenticateMiddleware(rt.putUpdateName))
 	rt.router.POST("/photo", rt.AuthenticateMiddleware(rt.postImage))
+	rt.router.DELETE("/photo", rt.AuthenticateMiddleware(rt.deleteImage))
 	rt.router.POST("/user/follow/:userId", rt.AuthenticateMiddleware(rt.postFollow))
 	rt.router.DELETE("/user/follow/:userId", rt.AuthenticateMiddleware(rt.deleteUnfollow))
 	rt.router.POST("/user/ban/:userId", rt.AuthenticateMiddleware(rt.postBan))

@@ -27,5 +27,5 @@ func (rt *_router) postBan(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// If successful
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User banned successfully"))
+	_, _ = w.Write([]byte("User banned successfully"))
 }

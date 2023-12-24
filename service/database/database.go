@@ -43,6 +43,7 @@ type AppDatabase interface {
 	FindName(nameToFind string) (string, error)
 	UpdateName(id string, name string) (string, error)
 	UploadImage(userID string) (*Image, error)
+	DeleteImage(photoId string) (string, error)
 	CheckUserId(userID string) bool
 	FollowUser(loggedInUserId string, userIdToFollow string) error
 	UnfollowUser(loggedInUserId string, userIdToUnfollow string) error

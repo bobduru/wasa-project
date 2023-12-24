@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -22,7 +21,7 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// Maximum upload of 10 MB files
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		http.Error(w, fmt.Sprintf("Error Parsing the Form: %v", err), http.StatusInternalServerError)
+		http.Error(w, "Error parsing the image", http.StatusInternalServerError)
 		return
 	}
 
@@ -35,11 +34,10 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 	defer file.Close()
 
 	image, err := rt.db.UploadImage(userID)
-	fmt.Println(image)
 
 	if err != nil {
 		// Handle the error, e.g., log it or return an appropriate HTTP error response
-		fmt.Println(err)
+		rt.baseLogger.Println(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -48,7 +46,7 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 	dst, err := os.Create(path + image.FileName)
 	if err != nil {
 		http.Error(w, "Error Creating the File", http.StatusInternalServerError)
-		fmt.Println(err)
+		rt.baseLogger.Println(err)
 		return
 	}
 	defer dst.Close()

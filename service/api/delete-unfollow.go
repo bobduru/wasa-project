@@ -23,5 +23,5 @@ func (rt *_router) deleteUnfollow(w http.ResponseWriter, r *http.Request, ps htt
 
 	// If successful
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("User unfollowed successfully"))
+	_, _ = w.Write([]byte("User unfollowed successfully"))
 }

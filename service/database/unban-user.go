@@ -9,12 +9,12 @@ func (db *appdbimpl) UnbanUser(bannerIdString string, bannedIdString string) err
 	// Convert string IDs to integers
 	bannerID, err := strconv.Atoi(bannerIdString)
 	if err != nil {
-		return fmt.Errorf("invalid banner ID: %v", err)
+		return fmt.Errorf("invalid banner ID: %w", err)
 	}
 
 	bannedID, err := strconv.Atoi(bannedIdString)
 	if err != nil {
-		return fmt.Errorf("invalid banned ID: %v", err)
+		return fmt.Errorf("invalid banned ID: %w", err)
 	}
 
 	// Delete ban relationship
@@ -24,13 +24,13 @@ func (db *appdbimpl) UnbanUser(bannerIdString string, bannedIdString string) err
     `
 	result, err := db.c.Exec(deleteStmt, bannerID, bannedID)
 	if err != nil {
-		return fmt.Errorf("error deleting ban relationship: %v", err)
+		return fmt.Errorf("error deleting ban relationship: %w", err)
 	}
 
 	// Check if a row was actually deleted
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error checking rows affected: %v", err)
+		return fmt.Errorf("error checking rows affected: %w", err)
 	}
 	if rowsAffected == 0 {
 		return fmt.Errorf("no ban relationship exists to be deleted")
