@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -9,6 +10,12 @@ import (
 )
 
 func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	// Extracting userId from the context
+	userId, ok := r.Context().Value("userID").(string)
+	if !ok {
+		http.Error(w, "User ID missing from context", http.StatusUnauthorized)
+		return
+	}
 
 	path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
 
@@ -20,11 +27,11 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Call the DeleteImage method
-	fileName, err := rt.db.DeleteImage(photoId)
+	fileName, err := rt.db.DeleteImage(userId, photoId)
 	if err != nil {
 		// Handle the error, e.g., log it or return an appropriate HTTP error response
 		rt.baseLogger.Println(err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
 		return
 	}
 
