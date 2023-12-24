@@ -22,10 +22,14 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/user/name", rt.AuthenticateMiddleware(rt.putUpdateName))
 	rt.router.POST("/photo", rt.AuthenticateMiddleware(rt.postImage))
 	rt.router.DELETE("/photo", rt.AuthenticateMiddleware(rt.deleteImage))
+	rt.router.POST("/photo/comment", rt.AuthenticateMiddleware(rt.postComment))
+	rt.router.DELETE("/photo/comment", rt.AuthenticateMiddleware(rt.deleteComment))
+
 	rt.router.POST("/user/follow/:userId", rt.AuthenticateMiddleware(rt.postFollow))
 	rt.router.DELETE("/user/follow/:userId", rt.AuthenticateMiddleware(rt.deleteUnfollow))
 	rt.router.POST("/user/ban/:userId", rt.AuthenticateMiddleware(rt.postBan))
 	rt.router.DELETE("/user/ban/:userId", rt.AuthenticateMiddleware(rt.deleteUnban))
+
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 

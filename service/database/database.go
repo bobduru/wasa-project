@@ -50,6 +50,10 @@ type AppDatabase interface {
 	BanUser(bannerIdString string, bannedIdString string) error
 	UnbanUser(bannerIdString string, bannedIdString string) error
 	GetUserProfile(userId int64) (*UserProfile, error)
+
+	AddComment(userId string, photoId string, commentText string) (*Comment, error)
+	DeleteComment(userId string, commentId string) error
+
 	Ping() error
 }
 
@@ -74,7 +78,7 @@ type Image struct {
 	ID         int64
 	UserID     int64
 	FileName   string
-	UploadTime time.Time // or string if you prefer
+	UploadTime time.Time
 	Likes      int
 	Comments   int
 }
@@ -84,7 +88,7 @@ type Comment struct {
 	UserID     int64
 	ImageID    int64
 	Text       string
-	CreateTime time.Time // or string if you prefer
+	CreateTime time.Time
 }
 
 type Follow struct {
