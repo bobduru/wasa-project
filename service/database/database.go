@@ -49,7 +49,9 @@ type AppDatabase interface {
 	UnfollowUser(loggedInUserId string, userIdToUnfollow string) error
 	BanUser(bannerIdString string, bannedIdString string) error
 	UnbanUser(bannerIdString string, bannedIdString string) error
+
 	GetUserProfile(userId int64) (*UserProfile, error)
+	GetStream(userId string) ([]Image, error)
 
 	AddComment(userId string, photoId string, commentText string) (*Comment, error)
 	DeleteComment(userId string, commentId string) error

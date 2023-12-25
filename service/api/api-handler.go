@@ -18,8 +18,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/login", rt.postLogin)
 
 	rt.router.GET("/user/profile/:userId", rt.GetUserProfile)
+	rt.router.GET("/user/stream", rt.AuthenticateMiddleware(rt.GetStream))
 
 	rt.router.PUT("/user/name", rt.AuthenticateMiddleware(rt.putUpdateName))
+
 	rt.router.POST("/photo", rt.AuthenticateMiddleware(rt.postImage))
 	rt.router.DELETE("/photo", rt.AuthenticateMiddleware(rt.deleteImage))
 	rt.router.POST("/photo/comment", rt.AuthenticateMiddleware(rt.postComment))
