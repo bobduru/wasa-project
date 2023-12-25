@@ -19,7 +19,7 @@ func (rt *_router) GetUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	userProfile, err := rt.db.GetUserProfile(userId)
 	if err != nil {
-		http.Error(w, "User not found", 404)
+		http.Error(w, err.Error(), 404)
 		return
 	}
 

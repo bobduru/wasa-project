@@ -14,7 +14,7 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 	}
 
 	// Retrieve photos of the user
-	photosQuery := `SELECT id, file_name, upload_time, likes, comments FROM images WHERE user_id = ?`
+	photosQuery := `SELECT id, file_name, upload_time FROM images WHERE user_id = ?`
 	rows, err := db.c.Query(photosQuery, userId)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching photos: %w", err)
@@ -23,9 +23,20 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 
 	for rows.Next() {
 		var photo Image
-		if err := rows.Scan(&photo.ID, &photo.FileName, &photo.UploadTime, &photo.Likes, &photo.Comments); err != nil {
+		if err := rows.Scan(&photo.ID, &photo.FileName, &photo.UploadTime); err != nil {
 			return nil, fmt.Errorf("error scanning photo: %w", err)
 		}
+
+		photo.Likes, err = db.GetLikesForPhoto(photo.ID)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching likes: %w", err)
+		}
+
+		photo.Comments, err = db.GetCommentsForPhoto(photo.ID)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching comments: %w", err)
+		}
+
 		userProfile.Photos = append(userProfile.Photos, photo)
 	}
 

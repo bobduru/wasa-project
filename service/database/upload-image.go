@@ -27,16 +27,20 @@ func (db *appdbimpl) UploadImage(userId string) (*Image, error) {
 		return nil, fmt.Errorf("error getting last insert ID: %w", err)
 	}
 
-	selectStmt := `SELECT id, user_id, file_name, upload_time, likes, comments FROM images WHERE id = ?`
+	selectStmt := `SELECT id, user_id, file_name, upload_time FROM images WHERE id = ?`
 
 	// Image object to hold the data
 	var image Image
 
 	// Executing the SQL statement to select
-	err = db.c.QueryRow(selectStmt, lastId).Scan(&image.ID, &image.UserID, &image.FileName, &image.UploadTime, &image.Likes, &image.Comments)
+	err = db.c.QueryRow(selectStmt, lastId).Scan(&image.ID, &image.UserID, &image.FileName, &image.UploadTime)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching inserted image: %w", err)
 	}
+
+	// Manually set Likes and Comments to empty slices
+	image.Likes = []Like{}
+	image.Comments = []Comment{}
 
 	return &image, nil
 }

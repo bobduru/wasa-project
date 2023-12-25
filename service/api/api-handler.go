@@ -30,6 +30,7 @@ func (rt *_router) Handler() http.Handler {
 
 	rt.router.POST("/user/follow/:userId", rt.AuthenticateMiddleware(rt.postFollow))
 	rt.router.DELETE("/user/follow/:userId", rt.AuthenticateMiddleware(rt.deleteUnfollow))
+
 	rt.router.POST("/user/ban/:userId", rt.AuthenticateMiddleware(rt.postBan))
 	rt.router.DELETE("/user/ban/:userId", rt.AuthenticateMiddleware(rt.deleteUnban))
 

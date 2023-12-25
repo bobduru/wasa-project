@@ -57,6 +57,9 @@ type AppDatabase interface {
 	AddLike(userId string, photoId string) error
 	DeleteLike(userId string, photoId string) error
 
+	GetLikesForPhoto(photoId int64) ([]Like, error)
+	GetCommentsForPhoto(photoId int64) ([]Comment, error)
+
 	Ping() error
 }
 
@@ -82,8 +85,8 @@ type Image struct {
 	UserID     int64
 	FileName   string
 	UploadTime time.Time
-	Likes      int
-	Comments   int
+	Likes      []Like
+	Comments   []Comment
 }
 
 type Comment struct {
