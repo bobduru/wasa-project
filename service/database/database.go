@@ -54,6 +54,9 @@ type AppDatabase interface {
 	AddComment(userId string, photoId string, commentText string) (*Comment, error)
 	DeleteComment(userId string, commentId string) error
 
+	AddLike(userId string, photoId string) error
+	DeleteLike(userId string, photoId string) error
+
 	Ping() error
 }
 
@@ -101,6 +104,11 @@ type Ban struct {
 	BannedID int64
 }
 
+type Like struct {
+	UserID  int64
+	ImageID int64
+}
+
 // New returns a new instance of AppDatabase based on the SQLite connection `db`.
 // `db` is required - an error will be returned if `db` is `nil`.
 func New(db *sql.DB) (AppDatabase, error) {
@@ -126,8 +134,6 @@ func New(db *sql.DB) (AppDatabase, error) {
 			user_id INTEGER,
 			file_name TEXT NOT NULL,
 			upload_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-			likes INTEGER DEFAULT 0,
-			comments INTEGER DEFAULT 0,
 			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 		)
 	`)
@@ -173,6 +179,20 @@ func New(db *sql.DB) (AppDatabase, error) {
 			PRIMARY KEY (banner_id, banned_id),
 			FOREIGN KEY (banner_id) REFERENCES users(id) ON DELETE CASCADE,
 			FOREIGN KEY (banned_id) REFERENCES users(id) ON DELETE CASCADE
+		)
+	`)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err.Error())
+	}
+
+	// Create Ban table
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS likes (
+			user_id INTEGER,
+			image_id INTEGER,
+			PRIMARY KEY (user_id, image_id),
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE
 		)
 	`)
 	if err != nil {

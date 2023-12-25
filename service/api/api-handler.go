@@ -25,6 +25,9 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/photo/comment", rt.AuthenticateMiddleware(rt.postComment))
 	rt.router.DELETE("/photo/comment", rt.AuthenticateMiddleware(rt.deleteComment))
 
+	rt.router.POST("/photo/like/:photoId", rt.AuthenticateMiddleware(rt.postLike))
+	rt.router.DELETE("/photo/like/:photoId", rt.AuthenticateMiddleware(rt.deleteLike))
+
 	rt.router.POST("/user/follow/:userId", rt.AuthenticateMiddleware(rt.postFollow))
 	rt.router.DELETE("/user/follow/:userId", rt.AuthenticateMiddleware(rt.deleteUnfollow))
 	rt.router.POST("/user/ban/:userId", rt.AuthenticateMiddleware(rt.postBan))
