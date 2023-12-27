@@ -44,6 +44,11 @@ func (db *appdbimpl) GetStream(userId string) ([]Image, error) {
 			return nil, fmt.Errorf("error fetching comments: %w", err)
 		}
 
+		img.UserName, err = db.GetNameFromUserId(img.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching user name: %w", err)
+		}
+
 		images = append(images, img)
 	}
 

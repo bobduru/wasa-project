@@ -1,0 +1,148 @@
+.header {
+    margin: 30px;
+    margin-bottom: 50px;
+    /* padding-bottom: 50px; */
+}
+
+.top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.top h1 {
+    margin-right: 40px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.follow-btn {
+    padding: 3px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.follow-btn:hover {
+    background-color: #0056b3;
+}
+
+.bottom {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 1.2em;
+}
+
+.bottom h4 {
+    margin: 0;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+
+.feed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.post-container {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: 100%;
+}
+
+.username-container {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.likes-container {
+    font-size: 1em;
+    margin-top: 10px;
+}
+
+.like-btn {
+    color:red;
+    background: none;
+    border: none;
+    padding: 5px;
+    line-height: 12px;
+    font-size: 15px;
+}
+.like-btn svg {
+    width: 20px;
+    height: 20px;
+}
+.like-btn.liked {
+    fill: red;
+}
+.comments-container {
+    margin-top: 15px;
+    border-top: 1px solid rgb(205, 205, 205);
+    padding-top:15px;
+}
+
+.comments-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comment {
+    background-color: #eaeaea;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.comment small {
+    color: #666;
+}
+
+.comment-input-container {
+    display:flex;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+.comment-input-container input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: none;
+    /* margin-top: 10px; */
+    
+}
+.comment-input-container button {
+    /* padding: 0; */
+    border: none;
+    outline: none;
+    padding: 0 15px;
+    font-weight:500;
+}
+
+
+.comment-input-container input::placeholder {
+    color: #aaa;
+}

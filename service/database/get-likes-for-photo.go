@@ -5,7 +5,7 @@ import (
 )
 
 func (db *appdbimpl) GetLikesForPhoto(photoId int64) ([]Like, error) {
-	var likes []Like
+	likes := []Like{}
 
 	// SQL statement to select likes for a specific photo
 	query := `SELECT user_id, image_id FROM likes WHERE image_id = ?`

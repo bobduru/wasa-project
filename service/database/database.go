@@ -40,6 +40,8 @@ import (
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
 	SetName(name string) (string, error)
+	GetNameFromUserId(userId int64) (string, error)
+
 	FindName(nameToFind string) (string, error)
 	UpdateName(id string, name string) (string, error)
 	UploadImage(userID string) (*Image, error)
@@ -85,6 +87,7 @@ type User struct {
 type Image struct {
 	ID         int64
 	UserID     int64
+	UserName   string
 	FileName   string
 	UploadTime time.Time
 	Likes      []Like
@@ -94,6 +97,7 @@ type Image struct {
 type Comment struct {
 	ID         int64
 	UserID     int64
+	UserName   string
 	ImageID    int64
 	Text       string
 	CreateTime time.Time

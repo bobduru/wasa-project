@@ -14,7 +14,7 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 	}
 
 	// Retrieve photos of the user
-	photosQuery := `SELECT id, file_name, upload_time FROM images WHERE user_id = ?`
+	photosQuery := `SELECT id, user_id, file_name, upload_time FROM images WHERE user_id = ?`
 	rows, err := db.c.Query(photosQuery, userId)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching photos: %w", err)
@@ -23,7 +23,7 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 
 	for rows.Next() {
 		var photo Image
-		if err := rows.Scan(&photo.ID, &photo.FileName, &photo.UploadTime); err != nil {
+		if err := rows.Scan(&photo.ID, &photo.UserID, &photo.FileName, &photo.UploadTime); err != nil {
 			return nil, fmt.Errorf("error scanning photo: %w", err)
 		}
 
@@ -37,6 +37,11 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 			return nil, fmt.Errorf("error fetching comments: %w", err)
 		}
 
+		photo.UserName, err = db.GetNameFromUserId(photo.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching user name: %w", err)
+		}
+
 		userProfile.Photos = append(userProfile.Photos, photo)
 	}
 
@@ -48,6 +53,7 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 	}
 	defer followersRows.Close()
 
+	userProfile.Followers = []User{}
 	for followersRows.Next() {
 		var follower User
 		if err := followersRows.Scan(&follower.ID, &follower.Name); err != nil {
@@ -63,7 +69,7 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 		return nil, fmt.Errorf("error fetching following: %w", err)
 	}
 	defer followingRows.Close()
-
+	userProfile.Following = []User{}
 	for followingRows.Next() {
 		var following User
 		if err := followingRows.Scan(&following.ID, &following.Name); err != nil {

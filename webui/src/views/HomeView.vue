@@ -1,32 +1,66 @@
 <script>
+import Post from "../components/Post.vue";
 export default {
-	data: function() {
-		return {
-			errormsg: null,
-			loading: false,
-			some_data: null,
-		}
-	},
-	methods: {
-		async refresh() {
-			this.loading = true;
-			this.errormsg = null;
-			try {
-				let response = await this.$axios.get("/");
-				this.some_data = response.data;
-			} catch (e) {
-				this.errormsg = e.toString();
-			}
-			this.loading = false;
-		},
-	},
-	mounted() {
-		this.refresh()
-	}
+    data: function () {
+        return {
+            errormsg: null,
+            loading: false,
+            user_profile: null,
+        };
+    },
+    methods: {
+        async refresh() {
+            this.loading = true;
+            this.errormsg = null;
+            try {
+                let response = await this.$axios.get("/user/profile/1");
+                this.user_profile = response.data;
+                console.log(response.data);
+            }
+            catch (e) {
+                this.errormsg = e.toString();
+            }
+            this.loading = false;
+        },
+    },
+    mounted() {
+        this.refresh();
+    },
+    components: { Post }
 }
 </script>
 
 <template>
+	<div v-if="user_profile != null">
+	  <!-- User Name -->
+	  <div class="header">
+	  <div class="top">
+		  <h1>{{ user_profile.Name }}</h1>
+		  <button class="follow-btn">Follow</button>
+	  </div>
+	  <div class="bottom">
+		  <h4>{{ user_profile.Following.length + " following" }}</h4>
+		  <h4>{{ user_profile.Followers.length + ((user_profile.Followers.length > 1) ? " followers" : " follower" )}}</h4>
+
+	  </div>
+	</div>
+	  
+  
+	  
+		  <div class="feed" v-for="post in user_profile.Photos" :key="post.ID">
+			<Post :post="post" />
+		  </div>
+	
+	</div>
+	
+  </template>
+  
+
+  
+ 
+  
+
+<!-- <template>
 	<div>
 		<div
 			class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -53,4 +87,4 @@ export default {
 </template>
 
 <style>
-</style>
+</style> -->
