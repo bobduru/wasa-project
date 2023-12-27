@@ -4,6 +4,7 @@ import router from './router'
 import axios from './services/axios.js';
 import ErrorMsg from './components/ErrorMsg.vue'
 import LoadingSpinner from './components/LoadingSpinner.vue'
+import AuthWrapper from './components/AuthWrapper.vue'
 import Post from './components/LoadingSpinner.vue'
 
 import './assets/dashboard.css'
@@ -14,6 +15,7 @@ const app = createApp(App)
 app.config.globalProperties.$axios = axios;
 app.component("ErrorMsg", ErrorMsg);
 app.component("LoadingSpinner", LoadingSpinner);
+app.component("AuthWrapper", AuthWrapper);
 app.component("Post",Post)
 app.use(router)
 app.mount('#app')
