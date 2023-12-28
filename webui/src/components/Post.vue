@@ -9,6 +9,7 @@ export default {
     data: function () {
         return {
             liked: userHasLiked(this.post, this.identifier),
+            newComment: ''
         };
     },
     methods: {
@@ -39,6 +40,35 @@ export default {
                         console.log(error);
                     })
             }
+        },
+        submitComment() {
+            const payload = {
+                comment: this.newComment
+            };
+            this.$axios.post('/photo/comment?photoId=' + this.post.ID, payload, {
+                headers: { 'Authorization': this.identifier }
+            })
+                .then((response) => {
+                    console.log(response);
+                    this.post.Comments.push(response.data);
+                    this.newComment = ''; // Reset comment input
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        deleteComment(id) {
+            console.log(this.post)
+            this.$axios.delete('/photo/comment?commentId=' + id, {
+                headers: { 'Authorization': this.identifier }
+            })
+                .then((response) => {
+                    console.log(response);
+                    this.post.Comments = this.post.Comments.filter(comment => comment.ID != id);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         }
     }
 }
@@ -47,7 +77,7 @@ export default {
 <template>
     <div v-if="post != null" class="post-container">
         <div class="username-container">
-            <RouterLink :to="{path:'user/'+ post.UserID}" replace>
+            <RouterLink :to="{ path: 'user/' + post.UserID }" replace>
                 <p>{{ post.UserName }}</p>
                 <!-- <p>{{ this.test}}</p> -->
             </RouterLink>
@@ -58,7 +88,7 @@ export default {
         <div class="likes-container">
             <p>
                 <button class="like-btn" @click="toggleLike">
-                    <svg class="feather" :class="this.liked ? 'liked': ''">
+                    <svg class="feather" :class="this.liked ? 'liked' : ''">
                         <use href="/feather-sprite-v4.29.0.svg#heart" />
                     </svg>
                 </button>
@@ -68,21 +98,31 @@ export default {
         <div class="comments-container">
             <ul>
                 <li class="comment" v-for="comment in post.Comments" :key="comment.ID">
-                    {{ comment.Text }} - <small>{{ new Date(comment.CreateTime).toLocaleString() }}</small>
+                    <div class="comment-top">
+
+                        <div>
+                            <strong>{{ comment.UserName }}</strong> - <small>{{ new
+                                Date(comment.CreateTime).toLocaleString()
+                            }}</small>
+                        </div>
+                        <button class="like-btn" @click="() => deleteComment(comment.ID)" v-if="comment.UserID == this.identifier">
+                            <svg class="feather" :class="this.liked ? 'liked' : ''">
+                                <use href="/feather-sprite-v4.29.0.svg#trash" />
+                            </svg>
+                        </button>
+                    </div>
+                    {{ comment.Text }}
+
                 </li>
             </ul>
-            <div class="comment-input-container">
-                <input type="text" placeholder="Comment" />
-                <button>Post</button>
-            </div>
+            <form class="comment-input-container" @submit.prevent="submitComment">
+                <input type="text" v-model="newComment" placeholder="Comment" />
+                <button type="submit">Post</button>
+            </form>
         </div>
     </div>
 </template>
 
 <style>
 
-.like-btn .feather.liked {
-    fill: red;
-    /* Color when liked */
-}
 </style>

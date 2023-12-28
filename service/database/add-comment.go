@@ -42,5 +42,9 @@ func (db *appdbimpl) AddComment(userId string, photoId string, commentText strin
 		return nil, fmt.Errorf("error fetching inserted comment: %w", err)
 	}
 
+	newComment.UserName, err = db.GetNameFromUserId(userIDInt)
+	if err != nil {
+		return nil, fmt.Errorf("error getting name: %w", err)
+	}
 	return &newComment, nil
 }

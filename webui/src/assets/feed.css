@@ -96,6 +96,10 @@
 .like-btn.liked {
     fill: red;
 }
+.like-btn .feather.liked {
+    fill: red;
+    /* Color when liked */
+}
 .comments-container {
     margin-top: 15px;
     border-top: 1px solid rgb(205, 205, 205);
@@ -117,6 +121,22 @@
 
 .comment small {
     color: #666;
+}
+
+.comment-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.comment-top svg {
+    width: 14px;
+    height: 14px;
+    color: gray;
+}
+
+.comment p {
+    margin: 0;
 }
 
 .comment-input-container {
