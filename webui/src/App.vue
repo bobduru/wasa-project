@@ -55,6 +55,14 @@ export default {
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#home" />
 								</svg>
+								Home
+							</RouterLink>
+						</li>
+						<li class="nav-item" v-if="loggedIn">
+							<RouterLink to="/user/1" class="nav-link">
+								<svg class="feather">
+									<use href="/feather-sprite-v4.29.0.svg#home" />
+								</svg>
 								User Profile temp
 							</RouterLink>
 						</li>

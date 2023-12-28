@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -22,7 +23,7 @@ func (rt *_router) postLike(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 
 	// Call the AddLike method from the database layer
-	err := rt.db.AddLike(userId, photoId)
+	likes, err := rt.db.AddLike(userId, photoId)
 	if err != nil {
 		// Handle the error, e.g., log it or return an appropriate HTTP error response
 		rt.baseLogger.Println(err)
@@ -30,7 +31,6 @@ func (rt *_router) postLike(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	// Respond with success
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write([]byte("Like added successfully"))
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(likes)
 }

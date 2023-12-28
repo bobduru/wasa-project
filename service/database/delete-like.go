@@ -5,16 +5,16 @@ import (
 	"strconv"
 )
 
-func (db *appdbimpl) DeleteLike(userId string, photoId string) error {
+func (db *appdbimpl) DeleteLike(userId string, photoId string) ([]Like, error) {
 	// Convert string IDs to integers
 	userIDInt, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid user ID: %v", err)
+		return nil, fmt.Errorf("invalid user ID: %v", err)
 	}
 
 	photoIDInt, err := strconv.ParseInt(photoId, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid photo ID: %v", err)
+		return nil, fmt.Errorf("invalid photo ID: %v", err)
 	}
 
 	// SQL statement to delete the like record, ensuring it belongs to the user
@@ -23,17 +23,22 @@ func (db *appdbimpl) DeleteLike(userId string, photoId string) error {
 	// Executing the SQL statement to delete
 	result, err := db.c.Exec(deleteStmt, userIDInt, photoIDInt)
 	if err != nil {
-		return fmt.Errorf("error deleting like: %w", err)
+		return nil, fmt.Errorf("error deleting like: %w", err)
 	}
 
 	// Check if a like was actually deleted
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error checking rows affected: %w", err)
+		return nil, fmt.Errorf("error checking rows affected: %w", err)
 	}
 	if rowsAffected == 0 {
-		return fmt.Errorf("no like found with the given photo ID and user ID")
+		return nil, fmt.Errorf("no like found with the given photo ID and user ID")
 	}
 
-	return nil
+	likes, err := db.GetLikesForPhoto(photoIDInt)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching likes: %w", err)
+	}
+
+	return likes, nil
 }

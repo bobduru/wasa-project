@@ -1,5 +1,9 @@
+
 <script>
 import Post from "../components/Post.vue";
+import { useRoute } from 'vue-router';
+import { getCookie } from "../utils/cookieUtils";
+
 export default {
 	data: function () {
 		return {
@@ -8,14 +12,20 @@ export default {
 			user_profile: null,
 		};
 	},
+	setup() {
+		const route = useRoute();
+		const userId = route.params.userId;
+
+		const identifier = getCookie('identifier');
+		return { userId , identifier};
+	},
 	methods: {
 		async refresh() {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let response = await this.$axios.get("/user/profile/1");
+				let response = await this.$axios.get("/user/profile/"+this.userId);
 				this.user_profile = response.data;
-				console.log(response.data);
 			}
 			catch (e) {
 				this.errormsg = e.toString();
@@ -24,6 +34,7 @@ export default {
 		},
 	},
 	mounted() {
+		console.log("userId" + this.userId)
 		this.refresh();
 	},
 	components: { Post }
@@ -51,7 +62,7 @@ export default {
 
 
 			<div class="feed" v-for="post in user_profile.Photos" :key="post.ID">
-				<Post :post="post" />
+				<Post :post="post" :identifier="this.identifier" />
 			</div>
 
 		</div>

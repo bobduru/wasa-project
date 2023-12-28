@@ -1,15 +1,44 @@
 <script>
+
+function userHasLiked(post, identifier) {
+    return post.Likes.some(like => like.UserID == identifier);
+}
+
 export default {
-    props: ["post"],
+    props: ["post", "identifier"],
     data: function () {
         return {
-            liked: false,
+            liked: userHasLiked(this.post, this.identifier),
         };
     },
     methods: {
         toggleLike() {
-            this.liked = !this.liked;
-            console.log("Like toggled");
+            // console.log(this.identifier)
+            // this.liked = !this.liked;
+            // console.log("Like toggled");
+            //if liked send delete request to photo/like/identifier else post, if successfull update liked
+            if (this.liked) {
+                this.$axios.delete("/photo/like/" + this.post.ID, { headers: { 'Authorization': this.identifier } })
+                    .then((response) => {
+                        console.log(response);
+                        this.post.Likes = response.data;
+                        this.liked = !this.liked;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
+            else {
+                this.$axios.post("/photo/like/" + this.post.ID, {}, { headers: { 'Authorization': this.identifier } })
+                    .then((response) => {
+                        console.log(response);
+                        this.post.Likes = response.data;
+                        this.liked = !this.liked;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            }
         }
     }
 }
@@ -18,7 +47,10 @@ export default {
 <template>
     <div v-if="post != null" class="post-container">
         <div class="username-container">
-            <p>{{ post.UserName }}</p>
+            <RouterLink :to="{path:'user/'+ post.UserID}" replace>
+                <p>{{ post.UserName }}</p>
+                <!-- <p>{{ this.test}}</p> -->
+            </RouterLink>
         </div>
         <div class="image-container">
             <img :src="'http://localhost:3000/images/' + post.FileName" :alt="post.FileName">

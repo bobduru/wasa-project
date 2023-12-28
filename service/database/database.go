@@ -58,8 +58,8 @@ type AppDatabase interface {
 	AddComment(userId string, photoId string, commentText string) (*Comment, error)
 	DeleteComment(userId string, commentId string) error
 
-	AddLike(userId string, photoId string) error
-	DeleteLike(userId string, photoId string) error
+	AddLike(userId string, photoId string) ([]Like, error)
+	DeleteLike(userId string, photoId string) ([]Like, error)
 
 	GetLikesForPhoto(photoId int64) ([]Like, error)
 	GetCommentsForPhoto(photoId int64) ([]Comment, error)

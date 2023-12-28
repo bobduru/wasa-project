@@ -16,12 +16,10 @@ export default {
     },
     computed: {
         isAuthenticated() {
-            console.log(getCookie('identifier'))
             return !!getCookie('identifier');
         }
     },
     created() {
-        console.log(this.isAuthenticated)
         if (!this.isAuthenticated && this.redirects) {
             this.router.push('/login');
         }
