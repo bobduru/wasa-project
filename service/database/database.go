@@ -41,6 +41,7 @@ import (
 type AppDatabase interface {
 	SetName(name string) (string, error)
 	GetNameFromUserId(userId int64) (string, error)
+	GetAllUsers() ([]User, error)
 
 	FindName(nameToFind string) (string, error)
 	UpdateName(id string, name string) (string, error)

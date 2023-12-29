@@ -1,36 +1,50 @@
 
 <script>
 import Post from "../components/Post.vue";
-import { useRoute } from 'vue-router';
+import Modal from "../components/Modal.vue";
+import { useRoute, useRouter } from 'vue-router';
 import { getCookie } from "../utils/cookieUtils";
-
+import { watch } from 'vue';
 export default {
 	data: function () {
 		return {
 			errormsg: null,
 			loading: false,
 			user_profile: null,
+			followingModalIsVisible: false,
+			followersModalIsVisible: false,
 		};
 	},
 	setup() {
 		const route = useRoute();
+		const router = useRouter();
 		const userId = route.params.userId;
 
 		const identifier = getCookie('identifier');
-		return { userId , identifier};
+		watch(() => route.params.userId, (newUserId) => {
+			router.go(0);
+		});
+		return { userId, identifier };
+
 	},
 	methods: {
 		async refresh() {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let response = await this.$axios.get("/user/profile/"+this.userId);
+				let response = await this.$axios.get("/user/profile/" + this.userId);
 				this.user_profile = response.data;
 			}
 			catch (e) {
 				this.errormsg = e.toString();
 			}
 			this.loading = false;
+		},
+		handleFollowersToggle() {
+			this.followersModalIsVisible = !this.followersModalIsVisible;
+		},
+		handleFollowingToggle() {
+			this.followingModalIsVisible = !this.followingModalIsVisible;
 		},
 	},
 	mounted() {
@@ -47,15 +61,25 @@ export default {
 		<div v-if="user_profile != null">
 			<!-- User Name -->
 			<div class="header">
+				<Modal :show="followersModalIsVisible" @close="handleFollowersToggle" :users="user_profile.Followers">
+					<template v-slot:header>
+						<h3>Followers</h3>
+					</template>
+				</Modal>
+				<Modal :show="followingModalIsVisible" @close="handleFollowingToggle" :users="user_profile.Following">
+					<template v-slot:header>
+						<h3>Following</h3>
+					</template>
+				</Modal>
 				<div class="top">
 					<h1>{{ user_profile.Name }}</h1>
 					<button class="follow-btn">Follow</button>
 				</div>
 				<div class="bottom">
-					<h4>{{ user_profile.Following.length + " following" }}</h4>
-					<h4>{{ user_profile.Followers.length + ((user_profile.Followers.length > 1) ? " followers" : " follower"
+					<h4 @click="handleFollowingToggle">{{ user_profile.Following.length + " following" }}</h4>
+					<h4 @click="handleFollowersToggle">{{ user_profile.Followers.length + ((user_profile.Followers.length >
+						1) ? " following" : " follower"
 					) }}</h4>
-
 				</div>
 			</div>
 

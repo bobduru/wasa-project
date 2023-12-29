@@ -33,6 +33,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.ServeFiles("/images/*filepath", http.Dir(path))
 
 	rt.router.GET("/", rt.getHelloWorld)
+	rt.router.GET("/users", rt.getAllUsers)
 	rt.router.GET("/context", rt.wrap(rt.getContextReply))
 
 	rt.router.POST("/login", rt.postLogin)

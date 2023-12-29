@@ -105,7 +105,7 @@ export default {
                                 Date(comment.CreateTime).toLocaleString()
                             }}</small>
                         </div>
-                        <button class="like-btn" @click="() => deleteComment(comment.ID)" v-if="comment.UserID == this.identifier">
+                        <button class="" @click="() => deleteComment(comment.ID)" v-if="comment.UserID == this.identifier">
                             <svg class="feather" :class="this.liked ? 'liked' : ''">
                                 <use href="/feather-sprite-v4.29.0.svg#trash" />
                             </svg>
