@@ -11,7 +11,6 @@ func (rt *_router) AuthenticateMiddleware(next httprouter.Handle) httprouter.Han
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		userID := r.Header.Get("Authorization")
 
-		// Assuming CheckUserId is a method of rt that checks the user ID
 		if exists := rt.db.CheckUserId(userID); !exists {
 			http.Error(w, "User ID not found", http.StatusNotFound)
 			return

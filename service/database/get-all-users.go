@@ -2,7 +2,7 @@ package database
 
 func (db *appdbimpl) GetAllUsers() ([]User, error) {
 	// Slice to hold the users
-	var users []User
+	users := []User{}
 
 	// SQL query to select all users
 	rows, err := db.c.Query("SELECT id, name FROM users")

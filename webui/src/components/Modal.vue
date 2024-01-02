@@ -50,6 +50,7 @@ export default {
 
                 <div v-for="user in filteredUsers" :key="user.ID" @click="$emit('close')">
                   <router-link :to="{ name: 'profile', params: { userId: user.ID } }" replace force v-if="user.ID != identifier">
+                  <!-- <router-link :to="{ name: 'profile', params: { userId: user.ID } }" replace force> -->
                     <div class="user">
 
                       <p>{{ user.Name }}</p>
@@ -139,7 +140,9 @@ export default {
 .search-input input {
   width: 100%;
   outline: none;
-  border: none
+  /* border: none */
+  border-radius: 3px;
+  border:1px solid rgb(179, 179, 179)
 }
 
 .search-results {
@@ -152,5 +155,24 @@ export default {
 
 .modal-default-button {
   float: right;
+}
+
+.username-form {
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+}
+
+.username-form input {
+  margin-bottom: 10px;
+  margin-top:5px;
+  outline: none;
+  border-radius: 3px;
+  border:1px solid rgb(179, 179, 179)
+  /* border: none; */
+}
+
+.username-form button {
+  margin-bottom: 15px;
 }
 </style>

@@ -48,8 +48,8 @@ type AppDatabase interface {
 	UploadImage(userID string) (*Image, error)
 	DeleteImage(userId string, photoId string) (string, error)
 	CheckUserId(userID string) bool
-	FollowUser(loggedInUserId string, userIdToFollow string) error
-	UnfollowUser(loggedInUserId string, userIdToUnfollow string) error
+	FollowUser(loggedInUserId string, userIdToFollow string) ([]User, error)
+	UnfollowUser(loggedInUserId string, userIdToUnfollow string) ([]User, error)
 	BanUser(bannerIdString string, bannedIdString string) error
 	UnbanUser(bannerIdString string, bannedIdString string) error
 
@@ -65,6 +65,8 @@ type AppDatabase interface {
 	GetLikesForPhoto(photoId int64) ([]Like, error)
 	GetCommentsForPhoto(photoId int64) ([]Comment, error)
 
+	GetUserStatus(loggedInUser string, userToFind string) (isFollowing bool, isBanned bool, err error)
+	GetFollowersForUser(userId int64) ([]User, error)
 	Ping() error
 }
 
@@ -73,11 +75,13 @@ type appdbimpl struct {
 }
 
 type UserProfile struct {
-	UserId    int64
-	Name      string
-	Photos    []Image
-	Followers []User
-	Following []User
+	UserId      int64
+	Name        string
+	Photos      []Image
+	Followers   []User
+	Following   []User
+	IsFollowing bool
+	IsBanned    bool
 }
 
 type User struct {

@@ -9,6 +9,7 @@ export default {
 			errormsg: null,
 			loading: false,
 			feed: null,
+			identifier : getCookie('identifier')
 		};
 	},
 	methods: {
@@ -16,10 +17,9 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-                const identifier = getCookie('identifier');
                 
                 // this.$axios.defaults.headers.common['Authorization'] = identifier;
-				let response = await this.$axios.get("/user/stream", { headers: { 'Authorization': identifier } })
+				let response = await this.$axios.get("/user/stream", { headers: { 'Authorization': this.identifier } })
 				this.feed = response.data;
 				console.log(response.data);
 			}
@@ -39,14 +39,16 @@ export default {
 <template>
 	<AuthWrapper :redirects="true">
 
-		<div v-if="feed != null">
+		<div v-if="feed != null" style="margin-top: 30px;">
 
 			<div class="feed" v-for="post in feed" :key="post.ID">
-				<Post :post="post" />
+				<Post :post="post" :identifier="this.identifier"/>
 			</div>
 
 		</div>
-
+		<div v-else>
+			<p>Looks a bit empty here, you should follow some users</p>
+		</div>
 	</AuthWrapper>
 </template>
   

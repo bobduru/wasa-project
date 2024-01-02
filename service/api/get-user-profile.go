@@ -23,6 +23,19 @@ func (rt *_router) GetUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	userID := r.Header.Get("Authorization")
+
+	if exists := rt.db.CheckUserId(userID); exists {
+		isFollowing, isBanned, err := rt.db.GetUserStatus(userID, userIdStr)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		userProfile.IsFollowing = isFollowing
+		userProfile.IsBanned = isBanned
+	}
+
 	// Setting the content type for the response.
 	w.Header().Set("Content-Type", "application/json")
 

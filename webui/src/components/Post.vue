@@ -13,11 +13,19 @@ export default {
         };
     },
     methods: {
+        deleteImage() {
+            window.confirm("Are you sure you want to delete this image?") &&
+                this.$axios.delete("/photo?photoId=" + this.post.ID, { headers: { 'Authorization': this.identifier } })
+                    .then((response) => {
+                        console.log(response);
+                        this.$emit('delete', this.post.ID);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+        },
         toggleLike() {
-            // console.log(this.identifier)
-            // this.liked = !this.liked;
-            // console.log("Like toggled");
-            //if liked send delete request to photo/like/identifier else post, if successfull update liked
+            console.log(this.identifier)
             if (this.liked) {
                 this.$axios.delete("/photo/like/" + this.post.ID, { headers: { 'Authorization': this.identifier } })
                     .then((response) => {
@@ -78,22 +86,37 @@ export default {
     <div v-if="post != null" class="post-container">
         <div class="username-container">
             <RouterLink :to="{ path: 'user/' + post.UserID }" replace>
-                <p>{{ post.UserName }}</p>
+                {{ post.UserName }}
                 <!-- <p>{{ this.test}}</p> -->
             </RouterLink>
+            <button class="" @click="deleteImage" v-if="post.UserID == this.identifier">
+                <svg class="feather" :class="this.liked ? 'liked' : ''">
+                    <use href="/feather-sprite-v4.29.0.svg#trash" />
+                </svg>
+            </button>
         </div>
         <div class="image-container">
             <img :src="'http://localhost:3000/images/' + post.FileName" :alt="post.FileName">
         </div>
         <div class="likes-container">
-            <p>
+            <span>
                 <button class="like-btn" @click="toggleLike">
                     <svg class="feather" :class="this.liked ? 'liked' : ''">
                         <use href="/feather-sprite-v4.29.0.svg#heart" />
                     </svg>
                 </button>
                 {{ post.Likes.length + ((post.Likes.length > 1) ? " likes" : " like") }}
-            </p>
+            </span>
+            <span class="date">
+                <!--  display the time with month day year and only the hour-->
+                {{ new Date(post.UploadTime).toLocaleString('default', {
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    hour12: true // change to false if you want 24-hour format
+                }) }}
+                <!-- {{ new Date(post.UploadTime).toLocaleDateString()  }} -->
+            </span>
         </div>
         <div class="comments-container">
             <ul>
@@ -106,7 +129,7 @@ export default {
                             }}</small>
                         </div>
                         <button class="" @click="() => deleteComment(comment.ID)" v-if="comment.UserID == this.identifier">
-                            <svg class="feather" :class="this.liked ? 'liked' : ''">
+                            <svg class="feather">
                                 <use href="/feather-sprite-v4.29.0.svg#trash" />
                             </svg>
                         </button>
@@ -123,6 +146,4 @@ export default {
     </div>
 </template>
 
-<style>
-
-</style>
+<style></style>

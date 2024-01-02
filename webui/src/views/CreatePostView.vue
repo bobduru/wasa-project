@@ -89,7 +89,7 @@ export default {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #42b983;
     color: white;
     cursor: pointer;
     width: 100%;
@@ -97,7 +97,7 @@ export default {
 }
 
 .create-post-container button:hover {
-    background-color: #0056b3;
+    background-color: #269261;
 }
 </style>
   

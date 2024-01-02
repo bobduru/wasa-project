@@ -13,6 +13,13 @@ export default {
 			user_profile: null,
 			followingModalIsVisible: false,
 			followersModalIsVisible: false,
+			updateNameModalIsVisible: false,
+			isFollowing: false,
+			isBanned: false,
+			usernameText: '',
+
+			isPersonalProfile: false,
+
 		};
 	},
 	setup() {
@@ -21,6 +28,7 @@ export default {
 		const userId = route.params.userId;
 
 		const identifier = getCookie('identifier');
+
 		watch(() => route.params.userId, (newUserId) => {
 			router.go(0);
 		});
@@ -31,9 +39,15 @@ export default {
 		async refresh() {
 			this.loading = true;
 			this.errormsg = null;
+
+			this.isPersonalProfile = this.userId == this.identifier;
+
 			try {
-				let response = await this.$axios.get("/user/profile/" + this.userId);
+				let response = await this.$axios.get("/user/profile/" + this.userId, { headers: { 'Authorization': this.identifier } });
 				this.user_profile = response.data;
+				this.isFollowing = this.user_profile.IsFollowing;
+				this.isBanned = this.user_profile.IsBanned;
+				console.log(this.user_profile)
 			}
 			catch (e) {
 				this.errormsg = e.toString();
@@ -46,6 +60,71 @@ export default {
 		handleFollowingToggle() {
 			this.followingModalIsVisible = !this.followingModalIsVisible;
 		},
+		handleUpdateNameToggle() {
+			this.updateNameModalIsVisible = !this.updateNameModalIsVisible;
+		},
+		deleteImage(photoId) {
+			this.user_profile.Photos = this.user_profile.Photos.filter(photo => photo.ID != photoId);
+		},
+		updateUsername() {
+			this.$axios.put("/user/name", { name: this.usernameText }, { headers: { 'Authorization': this.identifier } })
+				.then((response) => {
+					this.user_profile.Name = this.usernameText;
+					this.handleUpdateNameToggle();
+					this.refresh();
+				})
+				.catch((error) => {
+					console.log(error);
+					window.alert("Username already taken");
+					this.handleUpdateNameToggle();
+				})
+				
+				this.usernameText = '';
+		},
+		toggleFollow() {
+			if (this.isFollowing) {
+				console.log("delete")
+				this.$axios.delete("/user/follow/" + this.userId, { headers: { 'Authorization': this.identifier } })
+					.then((response) => {
+						this.isFollowing = false;
+						this.user_profile.Followers = response.data;
+					})
+					.catch((error) => {
+						console.log(error);
+					})
+			}
+			else {
+				this.$axios.post("/user/follow/" + this.userId, {}, { headers: { 'Authorization': this.identifier } })
+					.then((response) => {
+						this.isFollowing = true;
+						this.user_profile.Followers = response.data;
+					})
+					.catch((error) => {
+						console.log(error);
+					})
+			}
+		},
+		toggleBan() {
+			if (this.isBanned) {
+				this.$axios.delete("/user/ban/" + this.userId, { headers: { 'Authorization': this.identifier } })
+					.then((response) => {
+						this.isBanned = false;
+					})
+					.catch((error) => {
+						console.log(error);
+					})
+			}
+			else {
+				window.alert("Are you sure you want to ban this user?")
+				this.$axios.post("/user/ban/" + this.userId, {}, { headers: { 'Authorization': this.identifier } })
+					.then((response) => {
+						this.isBanned = true;
+					})
+					.catch((error) => {
+						console.log(error);
+					})
+			}
+		}
 	},
 	mounted() {
 		console.log("userId" + this.userId)
@@ -71,14 +150,36 @@ export default {
 						<h3>Following</h3>
 					</template>
 				</Modal>
+				<Modal :show="updateNameModalIsVisible" @close="handleUpdateNameToggle">
+					<template v-slot:header>
+						<h3>Update Username</h3>
+					</template>
+					<template v-slot:body>
+						<form class="username-form">
+							<input type="text" v-model="usernameText" placeholder="New username" />
+							<button type="submit" @click.prevent="updateUsername">Update</button>
+						</form>
+					</template>
+				</Modal>
 				<div class="top">
-					<h1>{{ user_profile.Name }}</h1>
-					<button class="follow-btn">Follow</button>
+					<h1>{{ user_profile.Name }}
+						<button v-if="isPersonalProfile" class="" @click="handleUpdateNameToggle">
+							<svg class="feather edit">
+								<use href="/feather-sprite-v4.29.0.svg#edit" />
+							</svg>
+						</button>
+					</h1>
+
+					<div v-if="!isPersonalProfile">
+						<button class="follow-btn" @click="toggleFollow">{{ isFollowing ? "Unfollow" : "Follow" }}</button>
+						<button class="ban-btn" @click="toggleBan">{{ isBanned ? "Unban" : "Ban" }}</button>
+					</div>
 				</div>
 				<div class="bottom">
+					<h4>{{ user_profile.Photos.length + ((user_profile.Photos.length > 1) ? " posts" : " post") }}</h4>
 					<h4 @click="handleFollowingToggle">{{ user_profile.Following.length + " following" }}</h4>
 					<h4 @click="handleFollowersToggle">{{ user_profile.Followers.length + ((user_profile.Followers.length >
-						1) ? " following" : " follower"
+						1) ? " followers" : " follower"
 					) }}</h4>
 				</div>
 			</div>
@@ -86,7 +187,7 @@ export default {
 
 
 			<div class="feed" v-for="post in user_profile.Photos" :key="post.ID">
-				<Post :post="post" :identifier="this.identifier" />
+				<Post :post="post" :identifier="this.identifier" @delete="() => deleteImage(post.ID)" />
 			</div>
 
 		</div>
