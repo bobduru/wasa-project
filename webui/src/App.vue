@@ -29,9 +29,27 @@ export default {
 			identifier: getCookie('identifier'),
 		}
 	},
+	setup() {
+		// const router = useRouter();
+		// const loggedIn = ref(!!getCookie('identifier'))
+
+		// function setLoggedIn(value) {
+		// 	loggedIn.value = value
+		// }
+
+		// provide('loggedIn', {
+		// 	loggedIn,
+		// 	setLoggedIn
+		// })
+
+		// return {
+		// 	loggedIn,
+		// 	setLoggedIn
+		// }
+	},
 	methods: {
 		logout() {
-			this.setLoggedIn(false);
+			setLoggedIn(false);
 			deleteCookie('identifier');
 			this.router.push('/login');
 		},
@@ -39,7 +57,7 @@ export default {
 			try {
 				let response = await this.$axios.get("/users");
 				this.users = response.data;
-				console.log(this.users)
+				// console.log(this.users)
 			}
 			catch (e) {
 				this.errormsg = e.toString();
@@ -72,7 +90,7 @@ export default {
 						class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
 						<span>General</span>
 					</h6> -->
-					<Modal :show="searchModalIsVisible" @close="handleSearchModalToggle" :users="this.users">
+					<Modal :show="searchModalIsVisible" @close="handleSearchModalToggle" :users="users">
 						<template v-slot:header>
 							<h3>Users</h3>
 						</template>
@@ -95,14 +113,14 @@ export default {
 							</RouterLink>
 						</li>
 						<li class="nav-item" v-if="loggedIn">
-							<RouterLink :to="'/user/'+ getCookie('identifier')" class="nav-link">
+							<RouterLink :to="'/user/' + getCookie('identifier')" class="nav-link">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#user" />
 								</svg>
 								Account
 							</RouterLink>
 						</li>
-						
+
 						<li class="nav-item" v-if="loggedIn">
 							<RouterLink class="nav-link" to="/create">
 								<svg class="feather">

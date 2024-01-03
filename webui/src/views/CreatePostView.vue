@@ -1,17 +1,16 @@
-<script setup>
+<script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCookie } from '../utils/cookieUtils';
-const route = useRouter();
-
-
-</script>
-<script>
 export default {
     data() {
         return {
             image:null
         };
+    },
+    setup() {
+        const router = useRouter();
+        return { router };
     },
     methods: {
         handleFileChange(event) {

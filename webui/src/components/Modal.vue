@@ -12,10 +12,12 @@ export default {
     return {
       searchText: '',
       identifier: getCookie('identifier'),
+      
     };
   },
   computed: {
     filteredUsers() {
+      // return []
       return this.users.filter(user =>
         user.Name.toLowerCase().includes(this.searchText.toLowerCase())
       );

@@ -1,14 +1,16 @@
-
+<!-- 
 <script setup>
 import { inject } from 'vue'
 import { useRouter } from "vue-router";
 import { setCookie } from "../utils/cookieUtils.js";
-const { loggedIn, setLoggedIn } = inject('loggedIn')
-const router = useRouter();
-</script>  
+// const { loggedIn, setLoggedIn } = inject('loggedIn')
+
+</script>   -->
 
 <script>
-
+import { inject } from 'vue'
+import { useRouter } from "vue-router";
+import { setCookie } from "../utils/cookieUtils.js";
 
 export default {
     data() {
@@ -17,12 +19,14 @@ export default {
         };
     },
     setup() {
-        // const router = useRouter();
+        const router = useRouter();
         // return { router };
-
+        const { loggedIn, setLoggedIn } = inject('loggedIn')
+        return { loggedIn, setLoggedIn, router}
     },
     methods: {
         async login() {
+            
             try {
                 const response = await this.$axios.post('http://localhost:3000/login', { name: this.name });
                 setCookie('identifier', response.data.identifier);
