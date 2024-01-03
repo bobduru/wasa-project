@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -11,7 +10,6 @@ import (
 // feature present in web browsers that blocks JavaScript requests going across different domains if not specified in a
 // policy. This function sends the policy of this API server.
 func applyCORSHandler(h http.Handler) http.Handler {
-	fmt.Print("CORS")
 	return h
 	return handlers.CORS(
 		// handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
