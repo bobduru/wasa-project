@@ -9,12 +9,12 @@ func (db *appdbimpl) AddComment(userId string, photoId string, commentText strin
 	// Convert string IDs to integers
 	userIDInt, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid user ID: %v", err)
+		return nil, fmt.Errorf("invalid user ID: %w", err)
 	}
 
 	photoIDInt, err := strconv.ParseInt(photoId, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid photo ID: %v", err)
+		return nil, fmt.Errorf("invalid photo ID: %w", err)
 	}
 
 	insertStmt := `
@@ -25,7 +25,7 @@ func (db *appdbimpl) AddComment(userId string, photoId string, commentText strin
 	// Executing the SQL statement to insert
 	res, err := db.c.Exec(insertStmt, userIDInt, photoIDInt, commentText)
 	if err != nil {
-		return nil, fmt.Errorf("error inserting new comment: %v", err)
+		return nil, fmt.Errorf("error inserting new comment: %w", err)
 	}
 
 	// Get the last inserted ID

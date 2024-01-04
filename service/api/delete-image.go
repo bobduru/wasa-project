@@ -31,7 +31,7 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 	if err != nil {
 		// Handle the error, e.g., log it or return an appropriate HTTP error response
 		rt.baseLogger.Println(err)
-		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("Error: %w", err), http.StatusInternalServerError)
 		return
 	}
 

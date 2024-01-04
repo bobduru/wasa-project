@@ -26,10 +26,10 @@ func (rt *_router) addCORSHeader(next httprouter.Handle) httprouter.Handle {
 func (rt *_router) Handler() http.Handler {
 	// Register routes
 
-	path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
-
-	rt.router.GlobalOPTIONS = http.HandlerFunc(rt.optionsCors)
-
+	// path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
+	path := "/home/wasa/Desktop/wasa-project/service/images"
+	// path := "../service/images"
+	
 	rt.router.ServeFiles("/images/*filepath", http.Dir(path))
 
 	rt.router.GET("/", rt.getHelloWorld)

@@ -9,7 +9,7 @@ func (db *appdbimpl) GetStream(userId string) ([]Image, error) {
 	// Convert string IDs to integers
 	userIdInt, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid user ID: %v", err)
+		return nil, fmt.Errorf("invalid user ID: %w", err)
 	}
 
 	var images []Image

@@ -8,17 +8,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-
-}
 
 func (rt *_router) postLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// w.Header().Set("Content-Type", "application/json")
-	// w.Header().Set("Access-Control-Allow-Origin", "*") // Adjust the value as needed
-	// enableCors(&w)
 
 	// Decode the JSON body
 	var data map[string]interface{}
@@ -40,7 +31,7 @@ func (rt *_router) postLogin(w http.ResponseWriter, r *http.Request, ps httprout
 	identifier, err := rt.db.FindName(name)
 	if err != nil {
 		// Handle the error, e.g., log it or return an appropriate HTTP error response
-		fmt.Println(err)
+		
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -49,7 +40,6 @@ func (rt *_router) postLogin(w http.ResponseWriter, r *http.Request, ps httprout
 		// Name not found in the database, create a new entry
 		identifier, err = rt.db.SetName(name)
 		if err != nil {
-			fmt.Println(err)
 			// Handle the error, e.g., log it or return an appropriate HTTP error response
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			return

@@ -9,12 +9,12 @@ func (db *appdbimpl) DeleteComment(userId string, commentId string) error {
 	// Convert string IDs to integers
 	userIDInt, err := strconv.ParseInt(userId, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid user ID: %v", err)
+		return fmt.Errorf("invalid user ID: %w", err)
 	}
 
 	commentIDInt, err := strconv.ParseInt(commentId, 10, 64)
 	if err != nil {
-		return fmt.Errorf("invalid comment ID: %v", err)
+		return fmt.Errorf("invalid comment ID: %w", err)
 	}
 
 	// SQL statement to delete the comment record, ensuring it belongs to the user
@@ -23,13 +23,13 @@ func (db *appdbimpl) DeleteComment(userId string, commentId string) error {
 	// Executing the SQL statement to delete
 	result, err := db.c.Exec(deleteStmt, commentIDInt, userIDInt)
 	if err != nil {
-		return fmt.Errorf("error deleting comment: %v", err)
+		return fmt.Errorf("error deleting comment: %w", err)
 	}
 
 	// Check if a comment was actually deleted
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("error checking rows affected: %v", err)
+		return fmt.Errorf("error checking rows affected: %w", err)
 	}
 	if rowsAffected == 0 {
 		return fmt.Errorf("no comment found with the given ID for this user")

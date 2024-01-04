@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,8 +18,8 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
-
+	// path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
+	
 	// Maximum upload of 10 MB files
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		http.Error(w, "Error parsing the image", http.StatusInternalServerError)
@@ -42,8 +43,13 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
+	// /home/wasa/Desktop/wasa-project/service/images
+	path := "/home/wasa/Desktop/wasa-project/service/images"
+	
+	fullpath := filepath.Join(path, image.FileName)
+
 	// Create a file in the static directory
-	dst, err := os.Create(path + image.FileName)
+	dst, err := os.Create(fullpath)
 	if err != nil {
 		http.Error(w, "Error Creating the File", http.StatusInternalServerError)
 		rt.baseLogger.Println(err)

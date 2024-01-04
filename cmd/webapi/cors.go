@@ -10,18 +10,18 @@ import (
 // feature present in web browsers that blocks JavaScript requests going across different domains if not specified in a
 // policy. This function sends the policy of this API server.
 func applyCORSHandler(h http.Handler) http.Handler {
-	return h
+	// return h
 	return handlers.CORS(
-		// handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Type", "Content-Language", "Origin"}),
-		// handlers.AllowedOrigins([]string{"*"}),
 		// handlers.AllowedHeaders([]string{
-		// 	"*",
+		// 	"Authorization",
 		// }),
-
-		// handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS", "DELETE", "PUT"}),
-		// handlers.AllowCredentials(),
+		handlers.AllowedHeaders([]string{
+            "Authorization", "Content-Type",
+        }),
+		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS", "DELETE", "PUT"}),
 		// Do not modify the CORS origin and max age, they are used in the evaluation.
 		handlers.AllowedOrigins([]string{"*"}),
 		handlers.MaxAge(1),
 	)(h)
+	
 }
