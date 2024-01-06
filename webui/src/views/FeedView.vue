@@ -19,7 +19,7 @@ export default {
 			try {
                 
                 // this.$axios.defaults.headers.common['Authorization'] = identifier;
-				let response = await this.$axios.get("/user/stream", { headers: { 'Authorization': this.identifier } })
+				let response = await this.$axios.get("/stream", { headers: { 'Authorization': this.identifier } })
 				this.feed = response.data;
 				console.log(response.data);
 			}

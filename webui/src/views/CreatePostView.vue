@@ -27,7 +27,7 @@ export default {
             formData.append('image', this.image);
 
             try {
-                await this.$axios.post('http://localhost:3000/photo', formData, {
+                await this.$axios.post('/photos', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': identifier

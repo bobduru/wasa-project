@@ -2,8 +2,8 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"errors"
+	"fmt"
 )
 
 func (db *appdbimpl) DeleteImage(userId string, photoId string) (string, error) {
@@ -13,8 +13,8 @@ func (db *appdbimpl) DeleteImage(userId string, photoId string) (string, error) 
 	getFileNameStmt := `SELECT file_name FROM images WHERE id = ? AND user_id = ?`
 	err := db.c.QueryRow(getFileNameStmt, photoId, userId).Scan(&fileName)
 	if err != nil {
-		
-		if errors.Is(err,sql.ErrNoRows) {
+
+		if errors.Is(err, sql.ErrNoRows) {
 			return "", fmt.Errorf("no image found for photo ID %s and user ID %s: %w", photoId, userId, err)
 		}
 		return "", fmt.Errorf("error retrieving image filename: %w", err)

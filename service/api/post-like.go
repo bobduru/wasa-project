@@ -9,7 +9,7 @@ import (
 
 func (rt *_router) postLike(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	// Extracting userId from the context
-	userId, ok := r.Context().Value("userID").(string)
+	userId, ok := r.Context().Value(userIDKey).(string)
 	if !ok {
 		http.Error(w, "User ID missing from context", http.StatusUnauthorized)
 		return

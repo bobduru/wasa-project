@@ -43,7 +43,7 @@ export default {
 			this.isPersonalProfile = this.userId == this.identifier;
 
 			try {
-				let response = await this.$axios.get("/user/profile/" + this.userId, { headers: { 'Authorization': this.identifier } });
+				let response = await this.$axios.get("/users/" + this.userId, { headers: { 'Authorization': this.identifier } });
 				this.user_profile = response.data;
 				this.isFollowing = this.user_profile.IsFollowing;
 				this.isBanned = this.user_profile.IsBanned;
@@ -67,7 +67,7 @@ export default {
 			this.user_profile.Photos = this.user_profile.Photos.filter(photo => photo.ID != photoId);
 		},
 		updateUsername() {
-			this.$axios.put("/user/name", { name: this.usernameText }, { headers: { 'Authorization': this.identifier } })
+			this.$axios.put("/users/name", { name: this.usernameText }, { headers: { 'Authorization': this.identifier } })
 				.then((response) => {
 					this.user_profile.Name = this.usernameText;
 					this.handleUpdateNameToggle();
@@ -83,8 +83,7 @@ export default {
 		},
 		toggleFollow() {
 			if (this.isFollowing) {
-				console.log("delete")
-				this.$axios.delete("/user/follow/" + this.userId, { headers: { 'Authorization': this.identifier } })
+				this.$axios.delete("/users/" + this.userId+ "/followers" , { headers: { 'Authorization': this.identifier } })
 					.then((response) => {
 						this.isFollowing = false;
 						this.user_profile.Followers = response.data;
@@ -94,7 +93,7 @@ export default {
 					})
 			}
 			else {
-				this.$axios.post("/user/follow/" + this.userId, {}, { headers: { 'Authorization': this.identifier } })
+				this.$axios.post("/users/" + this.userId+ "/followers", {}, { headers: { 'Authorization': this.identifier } })
 					.then((response) => {
 						this.isFollowing = true;
 						this.user_profile.Followers = response.data;
@@ -106,7 +105,7 @@ export default {
 		},
 		toggleBan() {
 			if (this.isBanned) {
-				this.$axios.delete("/user/ban/" + this.userId, { headers: { 'Authorization': this.identifier } })
+				this.$axios.delete("/users/" + this.userId+ "/bans", { headers: { 'Authorization': this.identifier } })
 					.then((response) => {
 						this.isBanned = false;
 					})
@@ -116,7 +115,7 @@ export default {
 			}
 			else {
 				window.alert("Are you sure you want to ban this user?")
-				this.$axios.post("/user/ban/" + this.userId, {}, { headers: { 'Authorization': this.identifier } })
+				this.$axios.post("/users/" + this.userId+ "/bans", {}, { headers: { 'Authorization': this.identifier } })
 					.then((response) => {
 						this.isBanned = true;
 					})

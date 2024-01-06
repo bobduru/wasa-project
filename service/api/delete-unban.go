@@ -7,7 +7,7 @@ import (
 )
 
 func (rt *_router) deleteUnban(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	loggedInUserId, ok := r.Context().Value("userID").(string)
+	loggedInUserId, ok := r.Context().Value(userIDKey).(string)
 	if !ok {
 		http.Error(w, "User ID missing from context", http.StatusUnauthorized)
 		return

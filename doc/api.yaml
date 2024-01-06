@@ -5,6 +5,9 @@ info:
   title: WASAPhoto
   description: Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can upload your photos directly from your PC, and they will be visible to everyone following you.
   version: 1.0.0
+security:
+  - BearerAuth: []
+
 paths:
   /session:
     post:
@@ -25,8 +28,6 @@ paths:
               properties:
                 name:
                   type: string
-                  example: Maria
-                  pattern: 'ˆ.*?$'
                   minLength: 3
                   maxLength: 16
         required: true
@@ -39,11 +40,11 @@ paths:
                   type: object
                   properties:
                     identifier:
-                      # change here if you decide to use an integer
-                      # or any other type of identifier
                       type: string
                       example: "abcdef012345"
-  /user/name:
+                      minLength: 3
+                      maxLength: 16
+  /users/name:
     put:
       summary: User can update their name
       operationId: setMyUserName
@@ -73,7 +74,7 @@ paths:
                       $ref: '#/components/schemas/plainString'
         '401':
           description: Unauthorized - User not authenticated
-  /photo/:
+  /photos/:
     post:
       summary: Upload Photo
       operationId: uploadPhoto
@@ -91,6 +92,7 @@ paths:
                 file:
                   type: string
                   format: binary
+                  minLength: 0
                   maxLength: 10000000
       responses:
         '201':
@@ -129,17 +131,18 @@ paths:
         '400':
           description: Bad Request - Invalid photo ID or photo not found
 
-  /user/follow/{userId}:
+  /users/{userId}/follow/:
+    parameters:
+            - name: userId
+              in: path
+              required: true
+              schema:
+                $ref: "#/components/schemas/idString"
     post:
       summary: Logged in user follows another
       operationId: followUser
       tags: ["user"]
-      parameters:
-          - name: userId
-            in: path
-            required: true
-            schema:
-              $ref: "#/components/schemas/idString"
+      
       security:
         - BearerAuth: []
       responses:
@@ -174,12 +177,6 @@ paths:
       summary: Logged in user unfollows another
       operationId: unfollowUser
       tags: ["user"]
-      parameters:
-          - name: userId
-            in: path
-            required: true
-            schema:
-              $ref: "#/components/schemas/idString"
       security:
         - BearerAuth: []
       responses:
@@ -210,19 +207,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/plainString'
-  /user/ban/{userId}:
+  /users/{userId}/ban/:
+    parameters:
+          - name: userId
+            in: path
+            required: true
+            schema:
+              $ref: "#/components/schemas/idString"
     post:
       summary: Logged in user bans another user
       operationId: banUser
       tags: ["user"]
       security:
         - BearerAuth: []
-      parameters:
-          - name: userId
-            in: path
-            required: true
-            schema:
-              $ref: "#/components/schemas/idString"
+      
       
       responses:
         '204':
@@ -237,12 +235,6 @@ paths:
         tags: ["user"]
         security:
         - BearerAuth: []
-        parameters:
-          - name: userId
-            in: path
-            required: true
-            schema:
-              $ref: "#/components/schemas/idString"
         responses:
           '204':
             description: User unbanned successfully
@@ -250,7 +242,7 @@ paths:
             description: Bad Request - Invalid user ID or user not found
           '401':
             description: Unauthorized - User not authenticated
-  /user/profile/{userId}:
+  /users/{userId}:
       get:
         summary: Get User Profile
         operationId: getUserProfile
@@ -272,37 +264,55 @@ paths:
                   properties:
                     userId:
                       type: string
+                      minLength: 0
+                      maxLength: 16
                     username:
                       type: string
+                      minLength: 3
+                      maxLength: 16
                     photos:
                       type: array
+                      minItems: 0
+                      maxItems: 50
                       items:
                         $ref: '#/components/schemas/Photo'
                     followers:
                       type: array
+                      minItems: 0
+                      maxItems: 50
                       items:
                         type: object
                         properties:
                           userId:
                             type: string
+                            minLength: 0
+                            maxLength: 16
                           username:
                             type: string
+                            minLength: 3
+                            maxLength: 16
                     following:
                       type: array
+                      minItems: 0
+                      maxItems: 50
                       items:
                         type: object
                         properties:
                           userId:
                             type: string
+                            minLength: 0
+                            maxLength: 16
                           username:
                             type: string
+                            minLength: 3
+                            maxLength: 16
           '404':
             description: User not found
-  /user/stream/:
+  /stream/:
     get:
       summary: User gets stream
       operationId: getMyStream
-      tags: ["user", "photo"]
+      tags: ["photo"]
       security:
         - BearerAuth: []
       responses:
@@ -312,20 +322,24 @@ paths:
             application/json:
               schema:
                 type: array
+                minItems: 0
+                maxItems: 50
+
                 items:
                   $ref: '#/components/schemas/Photo'
   
-  /photo/like/{photoId}:
+  /photos/{photoId}/like/:
+    parameters:
+            - name: photoId
+              in: path
+              required: true
+              schema:
+                $ref: "#/components/schemas/idString"
     post:
       summary: Like Photo
       operationId: likePhoto
       tags: ["photo"]
-      parameters:
-          - name: photoId
-            in: path
-            required: true
-            schema:
-              $ref: "#/components/schemas/idString"
+      
       security:
         - BearerAuth: []  
       responses:
@@ -339,12 +353,6 @@ paths:
       summary: Unlike Photo
       operationId: unlikePhoto
       tags: ["photo"]
-      parameters:
-        - in: path
-          name: photoId
-          schema:
-            $ref: "#/components/schemas/idString"
-          required: true
       security:
         - BearerAuth: []  
       responses:
@@ -355,11 +363,11 @@ paths:
         '401':
           description: Unauthorized - User not authenticated
 
-  /photo/comment:
+  /comments:
     post:
       summary: Comment on Photo
       operationId: commentPhoto
-      tags: ["photo"]
+      tags: ["comment"]
       parameters:
         - in: query
           name: photoId
@@ -423,9 +431,9 @@ paths:
 components:
   securitySchemes:
     BearerAuth:
-      type: apiKey
-      in: header
-      name: Authorization
+      type: http
+      scheme: bearer
+      bearerFormat: string
       description: The user identifier (User id) obtained after logging in. Include it in the Authorization header.
   schemas:
     plainString:
@@ -456,6 +464,7 @@ components:
           type: integer
         comments:
           type: array
+          minItems: 0
           maxItems: 50
           items:
             type: string

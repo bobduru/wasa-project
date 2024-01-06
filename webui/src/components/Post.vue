@@ -15,7 +15,7 @@ export default {
     methods: {
         deleteImage() {
             window.confirm("Are you sure you want to delete this image?") &&
-                this.$axios.delete("/photo?photoId=" + this.post.ID, { headers: { 'Authorization': this.identifier } })
+                this.$axios.delete("/photos?photoId=" + this.post.ID, { headers: { 'Authorization': this.identifier } })
                     .then((response) => {
                         console.log(response);
                         this.$emit('delete', this.post.ID);
@@ -27,7 +27,7 @@ export default {
         toggleLike() {
             console.log(this.identifier)
             if (this.liked) {
-                this.$axios.delete("/photo/like/" + this.post.ID, { headers: { 'Authorization': this.identifier } })
+                this.$axios.delete("/photos/" + this.post.ID+ "/likes" , { headers: { 'Authorization': this.identifier } })
                     .then((response) => {
                         console.log(response);
                         this.post.Likes = response.data;
@@ -38,7 +38,7 @@ export default {
                     })
             }
             else {
-                this.$axios.post("/photo/like/" + this.post.ID, {}, { headers: { 'Authorization': this.identifier } })
+                this.$axios.post("/photos/" + this.post.ID+ "/likes", {}, { headers: { 'Authorization': this.identifier } })
                     .then((response) => {
                         console.log(response);
                         this.post.Likes = response.data;
@@ -53,7 +53,7 @@ export default {
             const payload = {
                 comment: this.newComment
             };
-            this.$axios.post('/photo/comment?photoId=' + this.post.ID, payload, {
+            this.$axios.post('/comments?photoId=' + this.post.ID, payload, {
                 headers: { 'Authorization': this.identifier }
             })
                 .then((response) => {
@@ -67,7 +67,7 @@ export default {
         },
         deleteComment(id) {
             console.log(this.post)
-            this.$axios.delete('/photo/comment?commentId=' + id, {
+            this.$axios.delete('/comments?commentId=' + id, {
                 headers: { 'Authorization': this.identifier }
             })
                 .then((response) => {

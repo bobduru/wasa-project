@@ -12,14 +12,14 @@ import (
 
 func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-	userID, ok := r.Context().Value("userID").(string)
+	userID, ok := r.Context().Value(userIDKey).(string)
 	if !ok {
 		http.Error(w, "User ID missing from context", http.StatusUnauthorized)
 		return
 	}
 
 	// path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
-	
+
 	// Maximum upload of 10 MB files
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		http.Error(w, "Error parsing the image", http.StatusInternalServerError)
@@ -45,7 +45,7 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// /home/wasa/Desktop/wasa-project/service/images
 	path := "/home/wasa/Desktop/wasa-project/service/images"
-	
+
 	fullpath := filepath.Join(path, image.FileName)
 
 	// Create a file in the static directory
