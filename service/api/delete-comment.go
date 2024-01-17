@@ -33,5 +33,5 @@ func (rt *_router) deleteComment(w http.ResponseWriter, r *http.Request, ps http
 
 	// Respond with success
 	w.WriteHeader(204)
-	w.Write([]byte("Comment deleted successfully"))
+	_, _ = w.Write([]byte("Comment deleted successfully"))
 }

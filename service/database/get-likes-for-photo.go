@@ -23,5 +23,9 @@ func (db *appdbimpl) GetLikesForPhoto(photoId int64) ([]Like, error) {
 		likes = append(likes, like)
 	}
 
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
 	return likes, nil
 }

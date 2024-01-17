@@ -22,5 +22,9 @@ func (db *appdbimpl) GetFollowersForUser(userId int64) ([]User, error) {
 		followers = append(followers, follower)
 	}
 
+	// Check for errors from iterating over rows
+	if err = followersRows.Err(); err != nil {
+		return nil, err
+	}
 	return followers, nil
 }

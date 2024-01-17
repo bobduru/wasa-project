@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: "https://localhost:3000"
+  - url: "http://localhost:3000"
 info:
   title: WASAPhoto
   description: Keep in touch with your friends by sharing photos of special moments, thanks to WASAPhoto! You can upload your photos directly from your PC, and they will be visible to everyone following you.
@@ -131,7 +131,7 @@ paths:
         '400':
           description: Bad Request - Invalid photo ID or photo not found
 
-  /users/{userId}/follow/:
+  /users/{userId}/followers/:
     parameters:
             - name: userId
               in: path
@@ -207,7 +207,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/plainString'
-  /users/{userId}/ban/:
+  /users/{userId}/bans/:
     parameters:
           - name: userId
             in: path
@@ -328,7 +328,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Photo'
   
-  /photos/{photoId}/like/:
+  /photos/{photoId}/likes/:
     parameters:
             - name: photoId
               in: path

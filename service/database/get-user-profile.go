@@ -44,6 +44,9 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 
 		userProfile.Photos = append(userProfile.Photos, photo)
 	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
 
 	userProfile.Followers, err = db.GetFollowersForUser(userId)
 	if err != nil {
@@ -64,6 +67,10 @@ func (db *appdbimpl) GetUserProfile(userId int64) (*UserProfile, error) {
 			return nil, fmt.Errorf("error scanning following: %w", err)
 		}
 		userProfile.Following = append(userProfile.Following, following)
+	}
+
+	if err = followingRows.Err(); err != nil {
+		return nil, err
 	}
 
 	return &userProfile, nil
