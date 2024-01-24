@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -13,7 +14,6 @@ func (rt *_router) getAllUsers(w http.ResponseWriter, r *http.Request, _ httprou
 		http.Error(w, "Failed to retrieve users: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	// Set content type as JSON for the response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

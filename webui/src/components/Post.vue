@@ -10,6 +10,7 @@ export default {
         return {
             liked: userHasLiked(this.post, this.identifier),
             newComment: '',
+            localPost: JSON.parse(JSON.stringify(this.post)),
             url: __API_URL__
         };
     },
@@ -31,7 +32,7 @@ export default {
                 this.$axios.delete("/photos/" + this.post.ID+ "/likes" , { headers: { 'Authorization': this.identifier } })
                     .then((response) => {
                         console.log(response);
-                        this.post.Likes = response.data;
+                        this.localPost.Likes = response.data;
                         this.liked = !this.liked;
                     })
                     .catch((error) => {
@@ -42,7 +43,7 @@ export default {
                 this.$axios.post("/photos/" + this.post.ID+ "/likes", {}, { headers: { 'Authorization': this.identifier } })
                     .then((response) => {
                         console.log(response);
-                        this.post.Likes = response.data;
+                        this.localPost.Likes = response.data;
                         this.liked = !this.liked;
                     })
                     .catch((error) => {
@@ -59,7 +60,7 @@ export default {
             })
                 .then((response) => {
                     console.log(response);
-                    this.post.Comments.push(response.data);
+                    this.localPost.Comments.push(response.data);
                     this.newComment = ''; // Reset comment input
                 })
                 .catch((error) => {
@@ -73,7 +74,7 @@ export default {
             })
                 .then((response) => {
                     console.log(response);
-                    this.post.Comments = this.post.Comments.filter(comment => comment.ID != id);
+                    this.localPost.Comments = this.localPost.Comments.filter(comment => comment.ID != id);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -106,7 +107,7 @@ export default {
                         <use href="/feather-sprite-v4.29.0.svg#heart" />
                     </svg>
                 </button>
-                {{ post.Likes.length + ((post.Likes.length > 1) ? " likes" : " like") }}
+                {{ this.localPost.Likes.length + ((this.localPost.Likes.length > 1) ? " likes" : " like") }}
             </span>
             <span class="date">
                 <!--  display the time with month day year and only the hour-->
@@ -121,7 +122,7 @@ export default {
         </div>
         <div class="comments-container">
             <ul>
-                <li class="comment" v-for="comment in post.Comments" :key="comment.ID">
+                <li class="comment" v-for="comment in this.localPost.Comments" :key="comment.ID">
                     <div class="comment-top">
 
                         <div>

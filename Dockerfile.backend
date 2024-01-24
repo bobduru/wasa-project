@@ -8,12 +8,14 @@ RUN go build -o /app/webapi ./cmd/webapi
 
 FROM debian:bullseye
 
-EXPOSE 3000 4000
+EXPOSE 3000
 
 WORKDIR /app/
-
-COPY ./db /app/db
 
 COPY --from=builder /app/webapi ./
 
 CMD ["/app/webapi"]
+
+#TO run :
+#docker build -f Dockerfile.backend -t backend-image .
+#docker run -p 3000:3000 -d --name backend-container backend-image

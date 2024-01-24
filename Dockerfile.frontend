@@ -14,3 +14,8 @@ RUN npm run build-prod
 FROM nginx:stable
 
 COPY --from=builder /app/webui/dist /usr/share/nginx/html
+
+
+#To run :
+#docker build -f Dockerfile.frontend -t frontend-image .
+#docker run -p 8080:80 -d --name frontend-container frontend-image
