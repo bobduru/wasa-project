@@ -21,6 +21,5 @@ func (db *appdbimpl) SetName(name string) (string, error) {
 
 	// Convert the ID to a string
 	idString := strconv.FormatInt(id, 10)
-	fmt.Printf("ID: %s\n", idString)
 	return idString, nil
 }
