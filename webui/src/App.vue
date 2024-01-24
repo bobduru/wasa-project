@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { getCookie, deleteCookie } from './utils/cookieUtils';
 import { onMounted, watch } from 'vue';
@@ -6,20 +6,24 @@ import { provide, reactive, ref } from 'vue';
 import Modal from "./components/Modal.vue";
 // import { provide, ref } from 'vue'
 
-const router = useRouter();
-const loggedIn = ref(!!getCookie('identifier'))
+// const router = useRouter();
+// const loggedIn = ref(!!getCookie('identifier'))
 
-function setLoggedIn(value) {
-	loggedIn.value = value
-}
+// function setLoggedIn(value) {
+// 	loggedIn.value = value
+// }
 
-provide('loggedIn', {
-	loggedIn,
-	setLoggedIn
-})
-</script>
+// provide('loggedIn', {
+// 	loggedIn,
+// 	setLoggedIn
+// })
+</script> -->
 <script>
-
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { getCookie, deleteCookie } from './utils/cookieUtils';
+import { onMounted, watch } from 'vue';
+import { provide, reactive, ref } from 'vue';
+import Modal from "./components/Modal.vue";
 
 export default {
 	data() {
@@ -30,28 +34,35 @@ export default {
 		}
 	},
 	setup() {
-		// const router = useRouter();
-		// const loggedIn = ref(!!getCookie('identifier'))
+		const router = useRouter();
+		const loggedIn = ref(!!getCookie('identifier'))
 
-		// function setLoggedIn(value) {
-		// 	loggedIn.value = value
-		// }
+		function setLoggedIn(value) {
+			loggedIn.value = value
+		}
+		
 
-		// provide('loggedIn', {
-		// 	loggedIn,
-		// 	setLoggedIn
-		// })
-
-		// return {
-		// 	loggedIn,
-		// 	setLoggedIn
-		// }
+		provide('loggedIn', {
+			loggedIn,
+			setLoggedIn
+		})
+		return {
+			loggedIn,
+			setLoggedIn, 
+			router
+		}
 	},
 	methods: {
 		logout() {
-			setLoggedIn(false);
+			
+			this.setLoggedIn(false);
 			deleteCookie('identifier');
 			this.router.push('/login');
+		},
+		navigateToAccount() {
+			console.log(this.identifier)
+
+			this.router.push('/user/'+ this.identifier);
 		},
 		async refresh() {
 			try {
@@ -112,13 +123,14 @@ export default {
 								Feed
 							</RouterLink>
 						</li>
+						
 						<li class="nav-item" v-if="loggedIn">
-							<RouterLink :to="'/user/' + getCookie('identifier')" class="nav-link">
+							<a class="nav-link" @click="navigateToAccount">
 								<svg class="feather">
 									<use href="/feather-sprite-v4.29.0.svg#user" />
 								</svg>
 								Account
-							</RouterLink>
+							</a>
 						</li>
 
 						<li class="nav-item" v-if="loggedIn">

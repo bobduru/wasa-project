@@ -32,8 +32,9 @@ package database
 
 import (
 	"database/sql"
+
+    "github.com/sirupsen/logrus"
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -125,7 +126,7 @@ type Like struct {
 
 // New returns a new instance of AppDatabase based on the SQLite connection `db`.
 // `db` is required - an error will be returned if `db` is `nil`.
-func New(db *sql.DB) (AppDatabase, error) {
+func New(db *sql.DB, logger *logrus.Logger) (AppDatabase, error) {
 	if db == nil {
 		return nil, errors.New("database is required when building a AppDatabase")
 	}
@@ -138,7 +139,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		)
 	`)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
+		logger.WithError(err).Error("error creating database table")
 	}
 
 	// Create image table
@@ -152,7 +153,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		)
 	`)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
+		logger.WithError(err).Error("error creating database table")
 	}
 
 	// Create Comment table
@@ -168,7 +169,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		)
 	`)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
+		logger.WithError(err).Error("error creating database table")
 	}
 
 	// Create Follow table
@@ -182,7 +183,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		)
 	`)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
+		logger.WithError(err).Error("error creating database table")
 	}
 
 	// Create Ban table
@@ -196,7 +197,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 		)
 	`)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
+		logger.WithError(err).Error("error creating database table")
 	}
 
 	// Create Ban table
@@ -210,10 +211,9 @@ func New(db *sql.DB) (AppDatabase, error) {
 		)
 	`)
 	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
+		logger.WithError(err).Error("error creating database table")
 	}
 
-	fmt.Println("Tables created successfully")
 
 	return &appdbimpl{
 		c: db,

@@ -26,9 +26,8 @@ export default {
     },
     methods: {
         async login() {
-            
             try {
-                const response = await this.$axios.post('http://localhost:3000/session', { name: this.name });
+                const response = await this.$axios.post('/session', { name: this.name });
                 setCookie('identifier', response.data.identifier);
                 this.setLoggedIn(true);
                 this.router.push('/');

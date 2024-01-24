@@ -9,7 +9,8 @@ export default {
     data: function () {
         return {
             liked: userHasLiked(this.post, this.identifier),
-            newComment: ''
+            newComment: '',
+            url: __API_URL__
         };
     },
     methods: {
@@ -96,7 +97,7 @@ export default {
             </button>
         </div>
         <div class="image-container">
-            <img :src="'http://localhost:3000/images/' + post.FileName" :alt="post.FileName">
+            <img :src="this.url + '/images/' + post.FileName" :alt="post.FileName">
         </div>
         <div class="likes-container">
             <span>
