@@ -2,10 +2,8 @@ package api
 
 import (
 	"encoding/json"
-	"net/http"
-
-
 	"github.com/julienschmidt/httprouter"
+	"net/http"
 )
 
 func (rt *_router) getAllUsers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {

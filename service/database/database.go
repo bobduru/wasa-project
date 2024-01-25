@@ -33,8 +33,8 @@ package database
 import (
 	"database/sql"
 
-    "github.com/sirupsen/logrus"
 	"errors"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -213,7 +213,6 @@ func New(db *sql.DB, logger *logrus.Logger) (AppDatabase, error) {
 	if err != nil {
 		logger.WithError(err).Error("error creating database table")
 	}
-
 
 	return &appdbimpl{
 		c: db,
