@@ -30,7 +30,9 @@ export default {
 		},
 	},
 	mounted() {
-		this.refresh();
+		if(!!getCookie('identifier')){
+			this.refresh();
+		}
 	},
 	components: { Post }
 }
