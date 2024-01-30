@@ -115,6 +115,7 @@ export default {
                     month: 'long',
                     year: 'numeric',
                     hour: '2-digit',
+                    day: '2-digit',
                     hour12: true // change to false if you want 24-hour format
                 }) }}
                 <!-- {{ new Date(post.UploadTime).toLocaleDateString()  }} -->

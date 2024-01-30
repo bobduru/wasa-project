@@ -17,7 +17,6 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
 
 	// Extract the photoId from the query parameters
 	photoId := r.URL.Query().Get("photoId")
@@ -26,6 +25,7 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	
 	// Call the DeleteImage method
 	fileName, err := rt.db.DeleteImage(userId, photoId)
 	if err != nil {
@@ -35,8 +35,12 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	// Construct the full file path
-	fullPath := filepath.Join(path, fileName)
+	cwd, err := os.Getwd()
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+	
+	fullPath := filepath.Join(cwd, "service/images",  fileName)
 
 	// Delete the file from the filesystem
 	err = os.Remove(fullPath)

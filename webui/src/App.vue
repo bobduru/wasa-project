@@ -60,9 +60,8 @@ export default {
 			this.router.push('/login');
 		},
 		navigateToAccount() {
-			console.log(this.identifier)
 
-			this.router.push('/user/'+ this.identifier);
+			this.router.push('/user/'+ getCookie('identifier'));
 		},
 		async refresh() {
 			try {

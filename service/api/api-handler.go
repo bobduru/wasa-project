@@ -2,6 +2,8 @@ package api
 
 import (
 	"net/http"
+	"os"
+	"path/filepath"
 	// "github.com/julienschmidt/httprouter"
 )
 
@@ -9,9 +11,13 @@ import (
 func (rt *_router) Handler() http.Handler {
 	// Register routes
 
-	// path := "C:/Users/Asus/Documents/UM/Erasmus/Wasa/wasa-project/service/images/"
-	path := "/home/wasa/Desktop/wasa-project/service/images"
-	// path := "../service/images"
+	cwd, err := os.Getwd()
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Can't get local path")
+	}
+	
+	path := filepath.Join(cwd, "service/images")
+
 
 	rt.router.ServeFiles("/images/*filepath", http.Dir(path))
 

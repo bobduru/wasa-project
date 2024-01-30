@@ -21,6 +21,14 @@
     cursor: pointer;
 }
 
+.empty-msg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30%;
+    font-size: 20px;
+}
+
 .top button {
     padding: 3px 10px;
     border: none;

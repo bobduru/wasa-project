@@ -21,7 +21,6 @@ export default {
                 // this.$axios.defaults.headers.common['Authorization'] = identifier;
 				let response = await this.$axios.get("/stream", { headers: { 'Authorization': this.identifier } })
 				this.feed = response.data;
-				console.log(response.data);
 			}
 			catch (e) {
 				this.errormsg = e.toString();
@@ -48,8 +47,8 @@ export default {
 			</div>
 
 		</div>
-		<div v-else>
-			<p>Looks a bit empty here, you should follow some users</p>
+		<div v-else class="empty-msg">
+			<p>Looks a bit empty here, you should follow some users ;)</p>
 		</div>
 	</AuthWrapper>
 </template>

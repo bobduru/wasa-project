@@ -51,7 +51,7 @@ export default {
 
 
                 <div v-for="user in filteredUsers" :key="user.ID" @click="$emit('close')">
-                  <router-link :to="{ name: 'profile', params: { userId: user.ID } }" replace force v-if="user.ID != identifier">
+                  <router-link :to="{ name: 'profile', params: { userId: user.ID } }" replace force>
                   <!-- <router-link :to="{ name: 'profile', params: { userId: user.ID } }" replace force> -->
                     <div class="user">
 

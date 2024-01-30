@@ -43,10 +43,13 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	// /home/wasa/Desktop/wasa-project/service/images
-	path := "/home/wasa/Desktop/wasa-project/service/images"
+	cwd, err := os.Getwd()
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+	
+	fullpath := filepath.Join(cwd, "service/images", image.FileName)
 
-	fullpath := filepath.Join(path, image.FileName)
 
 	// Create a file in the static directory
 	dst, err := os.Create(fullpath)
