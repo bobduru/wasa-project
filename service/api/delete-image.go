@@ -17,7 +17,6 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-
 	// Extract the photoId from the query parameters
 	photoId := r.URL.Query().Get("photoId")
 	if photoId == "" {
@@ -25,7 +24,6 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	
 	// Call the DeleteImage method
 	fileName, err := rt.db.DeleteImage(userId, photoId)
 	if err != nil {
@@ -39,8 +37,8 @@ func (rt *_router) deleteImage(w http.ResponseWriter, r *http.Request, ps httpro
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	
-	fullPath := filepath.Join(cwd, "service/images",  fileName)
+
+	fullPath := filepath.Join(cwd, "service/images", fileName)
 
 	// Delete the file from the filesystem
 	err = os.Remove(fullPath)

@@ -47,9 +47,8 @@ func (rt *_router) postImage(w http.ResponseWriter, r *http.Request, ps httprout
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	
-	fullpath := filepath.Join(cwd, "service/images", image.FileName)
 
+	fullpath := filepath.Join(cwd, "service/images", image.FileName)
 
 	// Create a file in the static directory
 	dst, err := os.Create(fullpath)

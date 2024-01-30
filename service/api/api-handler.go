@@ -15,9 +15,8 @@ func (rt *_router) Handler() http.Handler {
 	if err != nil {
 		rt.baseLogger.WithError(err).Error("Can't get local path")
 	}
-	
-	path := filepath.Join(cwd, "service/images")
 
+	path := filepath.Join(cwd, "service/images")
 
 	rt.router.ServeFiles("/images/*filepath", http.Dir(path))
 
